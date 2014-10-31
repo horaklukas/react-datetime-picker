@@ -1,0 +1,19 @@
+<html>
+<head>
+  <title>Example of DateTime picker use</title>
+  <link rel="stylesheet" type="text/css" href="../dist/datetime-picker.css">
+  <script type="text/javascript" src="../node_modules/react/dist/react.js"></script>
+  <script type="text/javascript" src="../dist/datetime-picker.js"></script>
+</head>
+<body>
+  <div id="picker"></div>
+
+  <script type="text/javascript">
+    var trl = function(str) { return str;};
+    React.renderComponent(
+      React.createElement(DateTimePicker),
+      document.getElementById('picker')
+    );
+  </script>
+</body>
+</html>

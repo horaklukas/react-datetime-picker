@@ -1,0 +1,9 @@
+*.js
+*.css
+*.log
+
+!gulpfile.js
+!dist/*.js
+!dist/*.css
+
+node_modules/
