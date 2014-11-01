@@ -11,6 +11,7 @@ module.exports = React.createClass
   *  contain one  or more of key chars: `y` = years, `m` = months, `d` = days,
   *  `h` = hours, `i` = minutes, `s` = seconds
   ###
+  ###
   show: (position, date = new Date, disabled = [], confirmCb = ->) ->
     @setState {
       visible: true
@@ -23,7 +24,7 @@ module.exports = React.createClass
 
   hide: ->
     @setState visible: false
-
+  ###
   ###*
   * Invoked when day at calendar is selected
   *
@@ -59,7 +60,7 @@ module.exports = React.createClass
     @hide()
 
   getInitialState: ->
-    visible: false
+    visible: true
     position: x: 0, y: 0
     actualDate: new Date
     disabled: []
