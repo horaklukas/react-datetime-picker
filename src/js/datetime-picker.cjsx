@@ -8,28 +8,10 @@ months = [
 ]
 
 module.exports = React.createClass
-  ###*
-  * @param {Object.<string, number>} position
-  * @param {Date=} date Date to set as default, if null then `now` date will be
-  *  used
-  * @param {Array.<string>} disabled List of fields disabled for change. Can
-  *  contain one  or more of key chars: `y` = years, `m` = months, `d` = days,
-  *  `h` = hours, `i` = minutes, `s` = seconds
-  ###
-  ###
-  show: (position, date = new Date, disabled = [], confirmCb = ->) ->
-    @setState {
-      visible: true
-      position: position
-      actualDate: date
-      disabled: disabled
-    }
+  propTypes:
+    visible: React.PropTypes.bool
+    disabled: React.PropTypes.array
 
-    @setProps confirmCb: confirmCb
-
-  hide: ->
-    @setState visible: false
-  ###
   ###*
   * Invoked when day at calendar is selected
   *
@@ -62,12 +44,11 @@ module.exports = React.createClass
   handleConfirm: ->
     if @props.onDateConfirm? then @props.onDateConfirm @state.actualDate
 
-    @hide()
-
   getInitialState: ->
-    visible: true
-    position: x: 0, y: 0
     actualDate: new Date
+
+  getDefaultProps: ->
+    visible: true
     disabled: []
 
   render: ->
@@ -78,30 +59,25 @@ module.exports = React.createClass
     mins = actualDate.getMinutes()
     secs = actualDate.getSeconds()
 
-    containerStyles = display: if @state.visible then 'block' else 'none'
-    calendarStyles = {}
+    pickerStyles = display: if @props.visible then 'block' else 'none'
 
-    if @state.visible
-      calendarStyles = left: @state.position.x, top: @state.position.y
+    if @props.onClose?
+      Closer = <span className="closer" onClick={@props.onClose}>x</span>
 
-    <div style={containerStyles}>
-      <div className="overlay" onClick={@hide} />
-      <div className="calendar" style={calendarStyles}>
-        <div className="head">
-          <span className="title">{month} - {year}</span>
-          <span className="closer" onClick={@hide}>x</span>
-        </div>
-        <FullCalendar date={@state.actualDate}
-          disabled={@state.disabled}
-          onDaySelect={@handleDateChange}
-          onMonthYearChange={@handleDateChange.bind(this, null)} />
-
-        <TimePicker hours={hours} mins={mins} secs={secs}
-          disabled={@state.disabled}
-          onTimeChange={@handleTimeChange} />
-
-        <button className="confirm"onClick={@handleConfirm}>
-          Set date
-        </button>
+    <div className="datetime-picker" styles={pickerStyles}>
+      <div className="head">
+        <span className="title">{month} - {year}</span>
+        {Closer}
       </div>
+      <FullCalendar date={@state.actualDate}
+        disabled={@props.disabled}
+        onDaySelect={@handleDateChange}
+        onMonthYearChange={@handleDateChange.bind(this, null)} />
+      <TimePicker hours={hours} mins={mins} secs={secs}
+        disabled={@props.disabled}
+        onTimeChange={@handleTimeChange} />
+
+      <button className="confirm"onClick={@handleConfirm}>
+        Set date
+      </button>
     </div>

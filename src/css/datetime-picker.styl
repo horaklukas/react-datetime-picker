@@ -8,5 +8,42 @@ cal-base()
   font-family: Tahoma, Verdana, sans-serif
   font-size: 11px
 
-@import 'date-picker'
+.datetime-picker
+  cal-base()
+  display: inline-block
+  colors()
+  z-index: 98
+  .disabled
+    color: #999 !important
+  .head
+    height: 15px
+    border-bottom: 1px solid #556
+    colors()
+    font-size: 1.1em
+    font-weight: bold
+    text-align: center
+    .title
+      padding: 2px
+    .closer
+      size: @height
+      float: right
+      cursor: pointer
+      background-color: #DDD
+      &:hover
+        background-color: grey
+  button
+    height: 25px
+    font-size: 13px
+    line-height: @font-size
+    &.confirm
+      width: 100%
+      margin-bottom: 0
+      padding:2px
+  .nav-buttons
+    .left
+      float: left
+    .right
+      float: right
+
+@import 'calendar'
 @import 'time-picker'
