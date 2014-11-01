@@ -2,6 +2,11 @@
 FullCalendar = require './calendar'
 TimePicker = require './time-picker'
 
+months = [
+  'January', 'February', 'March', 'April', 'May', 'June', 'July'
+  'August', 'Semptember', 'October', 'December', 'November'
+]
+
 module.exports = React.createClass
   ###*
   * @param {Object.<string, number>} position
@@ -55,7 +60,7 @@ module.exports = React.createClass
     @setState nextDate
 
   handleConfirm: ->
-    if @props.confirmCb? then @props.confirmCb @state.actualDate
+    if @props.onDateConfirm? then @props.onDateConfirm @state.actualDate
 
     @hide()
 
@@ -67,7 +72,7 @@ module.exports = React.createClass
 
   render: ->
     {actualDate} = @state
-    month = trl("gui.datetime.months.#{@state.actualDate.getMonth()}")
+    month = months[@state.actualDate.getMonth()]
     year = actualDate.getFullYear().toString()
     hours = actualDate.getHours()
     mins = actualDate.getMinutes()
@@ -96,7 +101,7 @@ module.exports = React.createClass
           onTimeChange={@handleTimeChange} />
 
         <button className="confirm"onClick={@handleConfirm}>
-          {trl('gui.datetime.confirmbtn')}
+          Set date
         </button>
       </div>
     </div>

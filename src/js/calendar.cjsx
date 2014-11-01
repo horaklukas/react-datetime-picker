@@ -4,6 +4,8 @@ Calendar = require 'calendar.js'
 util = require 'util'
 CalendarDay = require './calendar-day'
 
+dayNamesAbbr = ['Mon', 'Tue', 'Wed', 'Thr', 'Fri', 'Sat', 'Sun']
+
 module.exports = React.createClass
   _cal: new Calendar()
 
@@ -53,7 +55,7 @@ module.exports = React.createClass
   * @param {number} order Order of day at week, Monday is 0, Tuesday 1, etc.
   ###
   createDayTitle: (order) ->
-    name = trl("gui.datetime.daynames.#{order}")
+    name = dayNamesAbbr[order]
     classes = classSet {
       'day': true
       'name': true

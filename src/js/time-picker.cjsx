@@ -6,14 +6,13 @@ module.exports = React.createClass
     <TimeCell value={value} type={type} disabled={disabled} maxVal={maxVal}
       onChange={@props.onTimeChange} />
 
-
   render: ->
     hourDisabled = 'h' in @props.disabled
     minDisabled = 'i' in @props.disabled
     secDisabled = 's' in @props.disabled
 
     <div className="timerow">
-      <span className="label">{trl('gui.datetime.timelabel')}:</span>
+      <span className="label">Time:</span>
       <div className="time">
         {@createTimeCell @props.hours, 'hour', hourDisabled, 23}
         <span className="colon">:</span>

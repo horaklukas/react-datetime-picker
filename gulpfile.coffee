@@ -6,6 +6,7 @@ mocha = require 'gulp-mocha'
 stylus = require 'gulp-stylus'
 rename = require 'gulp-rename'
 nib = require 'nib'
+connect = require 'gulp-connect'
 
 handleError = (e) ->
   gutil.log gutil.colors.red('Error'), e
@@ -41,11 +42,19 @@ gulp.task 'browserify', ->
       standalone: 'DateTimePicker'
     }))
     .pipe(gulp.dest(paths.dist))
+    .pipe(connect.reload())
 
 gulp.task 'stylus', ->
   gulp.src(paths.mainStyl)
     .pipe(stylus({compress: true, use: [nib()]}).on('error', handleError))
     .pipe(gulp.dest(paths.dist))
+    .pipe(connect.reload())
+
+gulp.task 'connect', ->
+  connect.server {
+    root: 'src'
+    livereload: true
+  }
 
 gulp.task 'test', ->
   # init test variables and environment
@@ -54,7 +63,7 @@ gulp.task 'test', ->
   gulp.src([paths.test], { read: false })
     .pipe(mocha(mochaOptions).on('error', handleError))
 
-gulp.task 'watch', ->
+gulp.task 'watch', ['connect'], ->
   gulp.watch paths.cjsx, ['cjsx']
   gulp.watch paths.js, ['browserify']
   gulp.watch paths.styl, ['stylus']
