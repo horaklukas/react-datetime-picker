@@ -1,0 +1,25 @@
+.calendar .timerow
+  padding: 5px 0
+  border-top: 1px solid #000
+  text-align: center
+  background-color:#FFF
+  .label
+    margin-right: 5px
+  .time
+    display: inline-block
+    /*.hour
+    .minute
+    .second*/
+    .value
+      padding: 0px 3px 0px 4px
+      border: 1px solid #889
+      background-color: #FFF
+      font-weight: bold
+      &.highlightable:hover
+        border-color: #000
+        colors(#667,#FFF)
+      &.active
+        colors(#000,#FFF)
+    .colon
+      padding: 0px 2px 0px 3px
+      font-weight: bold
