@@ -1,6 +1,7 @@
 #React = require 'react'
 FullCalendar = require './calendar'
 TimePicker = require './time-picker'
+classSet = require 'react/lib/cx'
 
 months = [
   'January', 'February', 'March', 'April', 'May', 'June', 'July'
@@ -59,12 +60,15 @@ module.exports = React.createClass
     mins = actualDate.getMinutes()
     secs = actualDate.getSeconds()
 
-    pickerStyles = display: if @props.visible then 'block' else 'none'
+    pickerClasses = classSet {
+      'datetime-picker': true
+      'visible': !!@props.visible
+    }
 
     if @props.onClose?
       Closer = <span className="closer" onClick={@props.onClose}>x</span>
 
-    <div className="datetime-picker" styles={pickerStyles}>
+    <div className={pickerClasses}>
       <div className="head">
         <span className="title">{month} - {year}</span>
         {Closer}

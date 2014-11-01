@@ -10,9 +10,11 @@ cal-base()
 
 .datetime-picker
   cal-base()
-  display: inline-block
+  display: none
   colors()
   z-index: 98
+  &.visible
+    display: inline-block
   .disabled
     color: #999 !important
   .head
