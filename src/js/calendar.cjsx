@@ -3,8 +3,7 @@ classSet = require 'react/lib/cx'
 Calendar = require 'calendar.js'
 util = require 'util'
 CalendarDay = require './calendar-day'
-
-dayNamesAbbr = ['Mon', 'Tue', 'Wed', 'Thr', 'Fri', 'Sat', 'Sun']
+moment = require 'moment'
 
 module.exports = React.createClass
   _cal: new Calendar()
@@ -55,7 +54,10 @@ module.exports = React.createClass
   * @param {number} order Order of day at week, Monday is 0, Tuesday 1, etc.
   ###
   createDayTitle: (order) ->
-    name = dayNamesAbbr[order]
+    weekDays = moment.weekdaysShort()
+    # weekdays are in list from Sunday to Saturday, we want it from Monday to
+    # Sunday and this "overflow" workaround makes it possible
+    name = weekDays[order + 1] ? weekDays[0]
     classes = classSet {
       'day': true
       'name': true

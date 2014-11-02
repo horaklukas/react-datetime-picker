@@ -1,12 +1,8 @@
 #React = require 'react'
 FullCalendar = require './calendar'
 TimePicker = require './time-picker'
+moment = require 'moment'
 classSet = require 'react/lib/cx'
-
-months = [
-  'January', 'February', 'March', 'April', 'May', 'June', 'July'
-  'August', 'Semptember', 'October', 'December', 'November'
-]
 
 module.exports = React.createClass
   propTypes:
@@ -54,12 +50,12 @@ module.exports = React.createClass
 
   render: ->
     {actualDate} = @state
-    month = months[@state.actualDate.getMonth()]
+    month = moment.months actualDate.getMonth()
     year = actualDate.getFullYear().toString()
     hours = actualDate.getHours()
     mins = actualDate.getMinutes()
     secs = actualDate.getSeconds()
-
+    moment()
     pickerClasses = classSet {
       'datetime-picker': true
       'visible': !!@props.visible
