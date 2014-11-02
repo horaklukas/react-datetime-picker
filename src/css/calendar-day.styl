@@ -1,0 +1,16 @@
+.datetime-picker table
+  .day
+    width: 2em
+    padding: 2px 4px 2px 2px
+    color: #456
+    text-align: right
+    &.highlightable:hover
+      padding: 1px 3px 1px 1px
+      border: 1px solid #bbb
+      background: #DEF
+    // Cell showing today date
+    &.selected
+      padding: 1px 3px 1px 1px
+      border: 1px solid #000
+      colors()
+      font-weight: bold

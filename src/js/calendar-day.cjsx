@@ -2,7 +2,6 @@
 classSet = require 'react/lib/cx'
 
 module.exports = React.createClass
-  mixins: [HighlightableMixin]
 
   handleDayClick: (e) ->
     if @props.disabled or not @props.day.isInCurrentMonth

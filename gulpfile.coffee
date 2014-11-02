@@ -6,6 +6,7 @@ mocha = require 'gulp-mocha'
 stylus = require 'gulp-stylus'
 rename = require 'gulp-rename'
 nib = require 'nib'
+connect = require 'gulp-connect'
 
 handleError = (e) ->
   gutil.log gutil.colors.red('Error'), e
@@ -14,8 +15,16 @@ handleError = (e) ->
 paths =
   cjsx: './src/js/**/*.cjsx'
   js: './src/js/**/*.js'
-  styles: './src/css/**/*.styl'
+  mainJs: './src/js/datetime-picker.js'
+  styl: './src/css/**/*.styl'
+  mainStyl: './src/css/datetime-picker.styl'
   test: './test/**/*-test.coffee'
+  dist: './dist'
+
+mochaOptions =
+  reporter: 'spec'
+  globals: ['sinon', 'expect', 'mockery']
+  bail: true
 
 gulp.task 'default', ['cjsx', 'browserify', 'stylus']
 
@@ -25,35 +34,37 @@ gulp.task 'cjsx', ->
     .pipe(gulp.dest('./src/js'))
 
 gulp.task 'browserify', ->
-  gulp.src('./src/js/datetime-picker.js')
+  gulp.src(paths.mainJs)
     .pipe(browserify({
       insertGlobals : false
       #insertGlobalVars: ['React']
       debug: 'production'
       standalone: 'DateTimePicker'
     }))
-    .pipe(gulp.dest('./dist/'))
+    .pipe(gulp.dest(paths.dist))
+    .pipe(connect.reload())
 
 gulp.task 'stylus', ->
-  gulp.src('./src/css/calendar.styl')
+  gulp.src(paths.mainStyl)
     .pipe(stylus({compress: true, use: [nib()]}).on('error', handleError))
-    .pipe(rename('datetime-picker.css'))
-    .pipe(gulp.dest('./dist/'))
+    .pipe(gulp.dest(paths.dist))
+    .pipe(connect.reload())
+
+gulp.task 'connect', ->
+  connect.server {
+    root: 'src'
+    livereload: true
+  }
 
 gulp.task 'test', ->
   # init test variables and environment
   require './test/test-assets'
 
-  mochaOptions =
-    reporter: 'spec'
-    globals: ['sinon', 'expect', 'mockery']
-    bail: true
-
   gulp.src([paths.test], { read: false })
     .pipe(mocha(mochaOptions).on('error', handleError))
 
-gulp.task 'watch', ->
+gulp.task 'watch', ['connect'], ->
   gulp.watch paths.cjsx, ['cjsx']
   gulp.watch paths.js, ['browserify']
-  gulp.watch paths.styles, ['stylus']
+  gulp.watch paths.styl, ['stylus']
   gulp.watch [paths.test].concat(paths.js), ['test']

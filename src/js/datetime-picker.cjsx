@@ -1,28 +1,17 @@
 #React = require 'react'
 FullCalendar = require './calendar'
 TimePicker = require './time-picker'
+classSet = require 'react/lib/cx'
+
+months = [
+  'January', 'February', 'March', 'April', 'May', 'June', 'July'
+  'August', 'Semptember', 'October', 'December', 'November'
+]
 
 module.exports = React.createClass
-  ###*
-  * @param {Object.<string, number>} position
-  * @param {Date=} date Date to set as default, if null then `now` date will be
-  *  used
-  * @param {Array.<string>} disabled List of fields disabled for change. Can
-  *  contain one  or more of key chars: `y` = years, `m` = months, `d` = days,
-  *  `h` = hours, `i` = minutes, `s` = seconds
-  ###
-  show: (position, date = new Date, disabled = [], confirmCb = ->) ->
-    @setState {
-      visible: true
-      position: position
-      actualDate: date
-      disabled: disabled
-    }
-
-    @setProps confirmCb: confirmCb
-
-  hide: ->
-    @setState visible: false
+  propTypes:
+    visible: React.PropTypes.bool
+    disabled: React.PropTypes.array
 
   ###*
   * Invoked when day at calendar is selected
@@ -54,48 +43,45 @@ module.exports = React.createClass
     @setState nextDate
 
   handleConfirm: ->
-    if @props.confirmCb? then @props.confirmCb @state.actualDate
-
-    @hide()
+    if @props.onDateConfirm? then @props.onDateConfirm @state.actualDate
 
   getInitialState: ->
-    visible: false
-    position: x: 0, y: 0
     actualDate: new Date
+
+  getDefaultProps: ->
+    visible: true
     disabled: []
 
   render: ->
     {actualDate} = @state
-    month = trl("gui.datetime.months.#{@state.actualDate.getMonth()}")
+    month = months[@state.actualDate.getMonth()]
     year = actualDate.getFullYear().toString()
     hours = actualDate.getHours()
     mins = actualDate.getMinutes()
     secs = actualDate.getSeconds()
 
-    containerStyles = display: if @state.visible then 'block' else 'none'
-    calendarStyles = {}
+    pickerClasses = classSet {
+      'datetime-picker': true
+      'visible': !!@props.visible
+    }
 
-    if @state.visible
-      calendarStyles = left: @state.position.x, top: @state.position.y
+    if @props.onClose?
+      Closer = <span className="closer" onClick={@props.onClose}>x</span>
 
-    <div style={containerStyles}>
-      <div className="overlay" onClick={@hide} />
-      <div className="calendar" style={calendarStyles}>
-        <div className="head">
-          <span className="title">{month} - {year}</span>
-          <span className="closer" onClick={@hide}>x</span>
-        </div>
-        <FullCalendar date={@state.actualDate}
-          disabled={@state.disabled}
-          onDaySelect={@handleDateChange}
-          onMonthYearChange={@handleDateChange.bind(this, null)} />
-
-        <TimePicker hours={hours} mins={mins} secs={secs}
-          disabled={@state.disabled}
-          onTimeChange={@handleTimeChange} />
-
-        <button className="confirm"onClick={@handleConfirm}>
-          {trl('gui.datetime.confirmbtn')}
-        </button>
+    <div className={pickerClasses}>
+      <div className="head">
+        <span className="title">{month} - {year}</span>
+        {Closer}
       </div>
+      <FullCalendar date={@state.actualDate}
+        disabled={@props.disabled}
+        onDaySelect={@handleDateChange}
+        onMonthYearChange={@handleDateChange.bind(this, null)} />
+      <TimePicker hours={hours} mins={mins} secs={secs}
+        disabled={@props.disabled}
+        onTimeChange={@handleTimeChange} />
+
+      <button className="confirm"onClick={@handleConfirm}>
+        Set date
+      </button>
     </div>

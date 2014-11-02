@@ -4,14 +4,27 @@
   <link rel="stylesheet" type="text/css" href="../dist/datetime-picker.css">
   <script type="text/javascript" src="../node_modules/react/dist/react.js"></script>
   <script type="text/javascript" src="../dist/datetime-picker.js"></script>
+  <script src="http://localhost:35729/livereload.js"></script>
 </head>
 <body>
+  Last action: <span id='info'></span>
   <div id="picker"></div>
 
   <script type="text/javascript">
-    var trl = function(str) { return str;};
+    var infoBar = document.getElementById('info');
+    var closeCb = function() {
+      infoBar.innerHTML = 'Clicked close of calendar';
+    };
+
+    var successCb = function(date) {
+      infoBar.innerHTML = date.toString();
+    };
+
     React.renderComponent(
-      React.createElement(DateTimePicker),
+      React.createElement(DateTimePicker, {
+        onClose: closeCb,
+        onDateConfirm: successCb
+      }),
       document.getElementById('picker')
     );
   </script>
