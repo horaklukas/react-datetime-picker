@@ -1,8 +1,10 @@
 #React = require 'react'
 FullCalendar = require './calendar'
 TimePicker = require './time-picker'
+Navigation = require './month-year-navigation'
 moment = require 'moment'
 classSet = require 'react/lib/cx'
+util = require 'util'
 
 module.exports = React.createClass
   propTypes:
@@ -12,16 +14,21 @@ module.exports = React.createClass
   ###*
   * Invoked when day at calendar is selected
   *
-  * @param {number} day Which day was selected
+  * @param {Date|string} unit New date or unit (y, M) to add/substract
+  * @param {string=} operation Subtract or add
   ###
-  handleDateChange: (day, month, year) ->
-    nextDate = @state.actualDate
+  handleDateChange: (unit, operation) ->
+    actualDate = moment(@state.actualDate)
 
-    if day? then nextDate.setDate day
-    if month? then nextDate.setMonth month
-    if year? then nextDate.setFullYear year
+    # dont touch time values
+    if util.isDate unit
+      nextDate = moment(unit).set 'hour', actualDate.get 'hour'
+      nextDate.set 'minute', actualDate.get 'minute'
+      nextDate.set 'second', actualDate.get 'second'
+    else
+      nextDate = actualDate[operation](1, unit)
 
-    @setState actualDate: nextDate
+    @setState actualDate: nextDate.toDate()
 
   ###*
   *
@@ -55,7 +62,6 @@ module.exports = React.createClass
     hours = actualDate.getHours()
     mins = actualDate.getMinutes()
     secs = actualDate.getSeconds()
-    moment()
     pickerClasses = classSet {
       'datetime-picker': true
       'visible': !!@props.visible
@@ -69,10 +75,11 @@ module.exports = React.createClass
         <span className="title">{month} - {year}</span>
         {Closer}
       </div>
+      <Navigation disabled={@props.disabled}
+        onMonthYearChange={@handleDateChange} />
       <FullCalendar date={@state.actualDate}
-        disabled={@props.disabled}
-        onDaySelect={@handleDateChange}
-        onMonthYearChange={@handleDateChange.bind(this, null)} />
+        disabled={'d' in @props.disabled}
+        onDaySelect={@handleDateChange} />
       <TimePicker hours={hours} mins={mins} secs={secs}
         disabled={@props.disabled}
         onTimeChange={@handleTimeChange} />

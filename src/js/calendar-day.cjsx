@@ -7,7 +7,7 @@ module.exports = React.createClass
     if @props.disabled or not @props.day.isInCurrentMonth
       return e.preventDefault()
 
-    @props.onDaySelect @props.day.date.getDate()
+    @props.onDaySelect @props.day.date
 
   render: ->
     idx = @props.index
