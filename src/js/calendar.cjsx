@@ -1,13 +1,10 @@
 #React = require 'react'
 classSet = require 'react/lib/cx'
-Calendar = require 'calendar.js'
 util = require 'util'
 CalendarDay = require './calendar-day'
 moment = require 'moment'
 
 module.exports = React.createClass
-  _cal: new Calendar()
-
   createDay: (day, idx) ->
     selected = (
       day.isInCurrentMonth and @props.date.getDate() is day.date.getDate()
@@ -44,18 +41,29 @@ module.exports = React.createClass
     <td className={classes} key={order}>{name}</td>
 
   render: ->
-    daynames = [0..6].map @createDayTitle
-    monthCalendar = @_cal.monthCalendar @props.date
+    date = moment(@props.date)
+    currentDate = date.clone().startOf('month').startOf('isoweek').isoWeekday 1
 
-    while monthCalendar.calendar.length < 6 then monthCalendar.calendar.push []
+    weeks = (for week in [0..5]
+      (for day in [0..6]
+        actualDay =
+          isInCurrentMonth: currentDate.get('month') is date.get('month')
+          date: currentDate.clone().toDate()
+
+        currentDate.add 1, 'days'
+        actualDay
+      )
+    )
 
     <div>
       <table>
         <thead>
-          <tr className="daynames">{daynames}</tr>
+          <tr className="daynames">
+            {[0..6].map @createDayTitle}
+          </tr>
         </thead>
         <tbody>
-          {monthCalendar.calendar.map(@createWeek)}
+          {weeks.map(@createWeek)}
         </tbody>
       </table>
     </div>
