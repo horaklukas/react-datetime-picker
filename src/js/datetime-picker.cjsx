@@ -38,9 +38,9 @@ module.exports = React.createClass
     nextDate = @state.actualDate
 
     switch type
-      when 'hour' then nextDate.setHours value
-      when 'minute' then nextDate.setMinutes value
-      when 'second' then nextDate.setSeconds value
+      when 'hour' then nextDate.hours value
+      when 'minute' then nextDate.minutes value
+      when 'second' then nextDate.seconds value
 
     @setState nextDate
 
