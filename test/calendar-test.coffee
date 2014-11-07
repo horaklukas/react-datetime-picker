@@ -1,11 +1,12 @@
 mockery.registerMock './calendar-day', mockComponent 'dayMock'
 
 Calendar = require '../src/js/calendar'
+moment = require 'moment'
 
 describe 'Calendar component', ->
   before ->
     @props =
-      date: new Date
+      date: moment new Date
 
     @cal = TestUtils.renderIntoDocument Calendar(@props)
     #@root = TestUtils.findRenderedDOMComponentWithClass @cal, 'nav-buttons'
@@ -21,52 +22,83 @@ describe 'Calendar component', ->
       @cal.createWeek.restore()
 
     it 'should create 6 rows for months that cover 4 weeks', ->
-      @cal.setProps date: new Date(2015, 1, 10)
+      @cal.setProps date: moment(new Date(2015, 1, 10))
 
       expect(@cal.createWeek.callCount).to.equal 6
 
     it 'should create 6 rows for months that cover 5 weeks', ->
-      @cal.setProps date: new Date(2014, 11, 5)
+      @cal.setProps date: moment(new Date(2014, 11, 5))
 
       expect(@cal.createWeek.callCount).to.equal 6
 
     it 'should create 6 rows for months that cover 6 weeks', ->
-      @cal.setProps date: new Date(2014, 10, 8)
+      @cal.setProps date: moment(new Date(2014, 10, 8))
 
       expect(@cal.createWeek.callCount).to.equal 6
 
     it 'should generate calendar with starting day that is always monday', ->
-      @cal.setProps date: new Date(2014, 11, 8)
-      expect(@cal.createWeek.firstCall.args[0][0].date.getDay()).to.equal 1
+      @cal.setProps date: moment(new Date(2014, 11, 8))
+      expect(@cal.createWeek.firstCall.args[0][0].day()).to.equal 1
 
-      @cal.setProps date: new Date(2012, 3, 12)
-      expect(@cal.createWeek.firstCall.args[0][0].date.getDay()).to.equal 1
+      @cal.setProps date: moment(new Date(2012, 3, 12))
+      expect(@cal.createWeek.firstCall.args[0][0].day()).to.equal 1
 
     it 'should start first week with day from prev month if needed', ->
-      @cal.setProps date: new Date(2015, 3, 10)
+      @cal.setProps date: moment(new Date(2015, 3, 10))
 
-      firstDay = @cal.createWeek.firstCall.args[0][0].date
-      expect(firstDay.getMonth()).to.equal 2
-      expect(firstDay.getDate()).to.equal 30
+      firstDay = @cal.createWeek.firstCall.args[0][0]
+      expect(firstDay.month()).to.equal 2
+      expect(firstDay.date()).to.equal 30
 
     it 'should end last week with day from next month if needed', ->
-      @cal.setProps date: new Date(2015, 7, 10)
+      @cal.setProps date: moment(new Date(2015, 7, 10))
 
-      lastDay = @cal.createWeek.lastCall.args[0][6].date
-      expect(lastDay.getMonth()).to.equal 8
-      expect(lastDay.getDate()).to.equal 6
+      lastDay = @cal.createWeek.lastCall.args[0][6]
+      expect(lastDay.month()).to.equal 8
+      expect(lastDay.date()).to.equal 6
 
-    it 'should set isInCurrentMonth to false for prev month days', ->
-      @cal.setProps date: new Date(2015, 3, 10)
+  describe 'method createWeek', ->
+    before ->
+      sinon.stub @cal, 'createDay'
 
-      expect(@cal.createWeek.firstCall.args[0][0].isInCurrentMonth).to.be.false
+    beforeEach ->
+      @cal.createDay.reset()
 
-    it 'should set isInCurrentMonth to false for next month days', ->
-      @cal.setProps date: new Date(2015, 7, 10)
+    after ->
+      @cal.createDay.restore()
 
-      expect(@cal.createWeek.lastCall.args[0][6].isInCurrentMonth).to.be.false
+    it 'should create day for each object at week', ->
+      week = @cal.createWeek ['day1','day2','day3','day4','day5','day6','day7']
 
-    it 'should set isInCurrentMonth to true for actual month days', ->
-      @cal.setProps date: new Date(2015, 5, 8)
+      expect(week.props.children).to.have.length 7
 
-      expect(@cal.createWeek.thirdCall.args[0][3].isInCurrentMonth).to.be.true
+  describe 'method createDay', ->
+    it 'should set currentMonth to true if day is in same month as actual', ->
+      @cal.setProps date: moment(new Date(2014, 3, 24))
+
+      day = @cal.createDay moment(new Date(2014, 3, 2, 2, 8, 10))
+      expect(day).to.have.deep.property 'props.currentMonth', true
+
+    it 'should set currentMonth to false if day isnt in same month as actual', ->
+      @cal.setProps date: moment(new Date(2014, 5, 24))
+
+      day = @cal.createDay moment(new Date(2014, 7, 5, 11, 3, 16))
+      expect(day).to.have.deep.property 'props.currentMonth', false
+
+    it 'should set day as a selected if it equal at month and day', ->
+      @cal.setProps date: moment(new Date(2014, 7, 5))
+
+      day = @cal.createDay moment(new Date(2014, 7, 5, 11, 3, 16))
+      expect(day).to.have.deep.property 'props.selected', true
+
+    it 'shouldnt set day as a selected if it not equal at month', ->
+      @cal.setProps date: moment(new Date(2014, 7, 5))
+
+      day = @cal.createDay moment(new Date(2014, 9, 5, 11, 3, 16))
+      expect(day).to.have.deep.property 'props.selected', false
+
+    it 'shouldnt set day as a selected if it not equal at day', ->
+      @cal.setProps date: moment(new Date(2014, 7, 5))
+
+      day = @cal.createDay moment(new Date(2014, 7, 22, 11, 3, 16))
+      expect(day).to.have.deep.property 'props.selected', false

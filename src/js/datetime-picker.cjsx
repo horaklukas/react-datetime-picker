@@ -4,7 +4,6 @@ TimePicker = require './time-picker'
 Navigation = require './month-year-navigation'
 moment = require 'moment'
 classSet = require 'react/lib/cx'
-util = require 'util'
 
 module.exports = React.createClass
   propTypes:
@@ -18,17 +17,17 @@ module.exports = React.createClass
   * @param {string=} operation Subtract or add
   ###
   handleDateChange: (unit, operation) ->
-    actualDate = moment(@state.actualDate)
+    {actualDate} = @state
 
     # dont touch time values
-    if util.isDate unit
-      nextDate = moment(unit).set 'hour', actualDate.get 'hour'
-      nextDate.set 'minute', actualDate.get 'minute'
-      nextDate.set 'second', actualDate.get 'second'
+    if moment.isMoment unit
+      nextDate = unit.hours actualDate.hours()
+      nextDate.minutes actualDate.minutes()
+      nextDate.seconds actualDate.seconds()
     else
       nextDate = actualDate[operation](1, unit)
 
-    @setState actualDate: nextDate.toDate()
+    @setState actualDate: nextDate
 
   ###*
   *
@@ -46,10 +45,11 @@ module.exports = React.createClass
     @setState nextDate
 
   handleConfirm: ->
-    if @props.onDateConfirm? then @props.onDateConfirm @state.actualDate
+    if @props.onDateConfirm?
+      @props.onDateConfirm @state.actualDate.toDate()
 
   getInitialState: ->
-    actualDate: new Date
+    actualDate: moment(new Date)
 
   getDefaultProps: ->
     visible: true
@@ -57,11 +57,11 @@ module.exports = React.createClass
 
   render: ->
     {actualDate} = @state
-    month = moment.months actualDate.getMonth()
-    year = actualDate.getFullYear().toString()
-    hours = actualDate.getHours()
-    mins = actualDate.getMinutes()
-    secs = actualDate.getSeconds()
+    month = moment.months actualDate.month()
+    year = actualDate.year()
+    hours = actualDate.hours()
+    mins = actualDate.minutes()
+    secs = actualDate.seconds()
     pickerClasses = classSet {
       'datetime-picker': true
       'visible': !!@props.visible
@@ -77,7 +77,7 @@ module.exports = React.createClass
       </div>
       <Navigation disabled={@props.disabled}
         onMonthYearChange={@handleDateChange} />
-      <FullCalendar date={@state.actualDate}
+      <FullCalendar date={actualDate}
         disabled={'d' in @props.disabled}
         onDaySelect={@handleDateChange} />
       <TimePicker hours={hours} mins={mins} secs={secs}

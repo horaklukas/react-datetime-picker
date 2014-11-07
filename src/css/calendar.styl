@@ -1,23 +1,21 @@
-.datetime-picker  table
+.datetime-picker .calendar
+  display: table
   clear: both
   cal-base()
   colors(#EEF)
   border: 0
   .weekend
     color: #A66
-  thead
-    .daynames
-      background: #BDF
-      .name
-        padding: 2px
-        border-bottom: 1px solid #556
-        color: #000
-        text-align: center
-  tbody
-    // Empty cells (the best is to hide them)
-    // Empty row (some months need less than 6 rows)
-    .emptycell
-    .emptyrow
-      visibility: hidden
+  .daynames
+    display: table-row
+    background: #BDF
+    .name
+      display: table-cell
+      padding: 2px
+      border-bottom: 1px solid #556
+      color: #000
+      text-align: center
+  .week
+    display: table-row
 
 @import 'calendar-day'
