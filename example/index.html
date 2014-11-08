@@ -23,7 +23,8 @@
     React.renderComponent(
       React.createElement(DateTimePicker, {
         onClose: closeCb,
-        onDateConfirm: successCb
+        onDateConfirm: successCb,
+        visible: true
       }),
       document.getElementById('picker')
     );
