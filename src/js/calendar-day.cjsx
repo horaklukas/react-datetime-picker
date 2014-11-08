@@ -4,25 +4,23 @@ classSet = require 'react/lib/cx'
 module.exports = React.createClass
 
   handleDayClick: (e) ->
-    if @props.disabled or not @props.day.isInCurrentMonth
-      return e.preventDefault()
-
-    @props.onDaySelect @props.day.date.getDate()
+    @props.onDaySelect @props.day
 
   render: ->
-    idx = @props.index
-    day = @props.day
-    text = if day.isInCurrentMonth then day.date.getDate() else '&nbsp;'
+    {day, currentMonth} = @props
+    weekDay = day.isoWeekday()
 
     classes = classSet {
-      'day': day.isInCurrentMonth
-      'emptycell': not day.isInCurrentMonth
-      'weekend': idx is 5 or idx is 6
+      'day': true
+      'currentMonth': currentMonth
+      'weekend': weekDay is 6 or weekDay is 7
       'selected': @props.selected
-      'today': day.isToday
-      'highlightable': not @props.disabled
+      #'today': moment() is day
       'disabled': @props.disabled
     }
 
-    <td className={classes} dangerouslySetInnerHTML={{__html: text}}
-      onClick={@handleDayClick} />
+    clickHandler = @handleDayClick if currentMonth and not @props.disabled
+
+    <span className={classes} onClick={clickHandler}>
+      {day.date()}
+    </span>

@@ -1,12 +1,9 @@
 #React = require 'react'
 FullCalendar = require './calendar'
 TimePicker = require './time-picker'
+Navigation = require './month-year-navigation'
+moment = require 'moment'
 classSet = require 'react/lib/cx'
-
-months = [
-  'January', 'February', 'March', 'April', 'May', 'June', 'July'
-  'August', 'Semptember', 'October', 'December', 'November'
-]
 
 module.exports = React.createClass
   propTypes:
@@ -16,14 +13,19 @@ module.exports = React.createClass
   ###*
   * Invoked when day at calendar is selected
   *
-  * @param {number} day Which day was selected
+  * @param {Date|string} unit New date or unit (y, M) to add/substract
+  * @param {string=} operation Subtract or add
   ###
-  handleDateChange: (day, month, year) ->
-    nextDate = @state.actualDate
+  handleDateChange: (unit, operation) ->
+    {actualDate} = @state
 
-    if day? then nextDate.setDate day
-    if month? then nextDate.setMonth month
-    if year? then nextDate.setFullYear year
+    # dont touch time values
+    if moment.isMoment unit
+      nextDate = unit.hours actualDate.hours()
+      nextDate.minutes actualDate.minutes()
+      nextDate.seconds actualDate.seconds()
+    else
+      nextDate = actualDate[operation](1, unit)
 
     @setState actualDate: nextDate
 
@@ -36,30 +38,30 @@ module.exports = React.createClass
     nextDate = @state.actualDate
 
     switch type
-      when 'hour' then nextDate.setHours value
-      when 'minute' then nextDate.setMinutes value
-      when 'second' then nextDate.setSeconds value
+      when 'hour' then nextDate.hours value
+      when 'minute' then nextDate.minutes value
+      when 'second' then nextDate.seconds value
 
     @setState nextDate
 
   handleConfirm: ->
-    if @props.onDateConfirm? then @props.onDateConfirm @state.actualDate
+    if @props.onDateConfirm?
+      @props.onDateConfirm @state.actualDate.toDate()
 
   getInitialState: ->
-    actualDate: new Date
+    actualDate: moment(new Date)
 
   getDefaultProps: ->
-    visible: true
+    visible: false
     disabled: []
 
   render: ->
     {actualDate} = @state
-    month = months[@state.actualDate.getMonth()]
-    year = actualDate.getFullYear().toString()
-    hours = actualDate.getHours()
-    mins = actualDate.getMinutes()
-    secs = actualDate.getSeconds()
-
+    month = moment.months actualDate.month()
+    year = actualDate.year()
+    hours = actualDate.hours()
+    mins = actualDate.minutes()
+    secs = actualDate.seconds()
     pickerClasses = classSet {
       'datetime-picker': true
       'visible': !!@props.visible
@@ -73,10 +75,11 @@ module.exports = React.createClass
         <span className="title">{month} - {year}</span>
         {Closer}
       </div>
-      <FullCalendar date={@state.actualDate}
-        disabled={@props.disabled}
-        onDaySelect={@handleDateChange}
-        onMonthYearChange={@handleDateChange.bind(this, null)} />
+      <Navigation disabled={@props.disabled}
+        onMonthYearChange={@handleDateChange} />
+      <FullCalendar date={actualDate}
+        disabled={'d' in @props.disabled}
+        onDaySelect={@handleDateChange} />
       <TimePicker hours={hours} mins={mins} secs={secs}
         disabled={@props.disabled}
         onTimeChange={@handleTimeChange} />
