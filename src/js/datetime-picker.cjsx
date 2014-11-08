@@ -52,7 +52,7 @@ module.exports = React.createClass
     actualDate: moment(new Date)
 
   getDefaultProps: ->
-    visible: true
+    visible: false
     disabled: []
 
   render: ->
