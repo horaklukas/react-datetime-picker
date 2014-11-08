@@ -21,7 +21,7 @@ describe 'TimeCell component', ->
       @cell.setProps disabled: false
       @elem.props.className.should.not.contain 'disabled'
 
-  describe 'events', ->
+  describe 'events enabling', ->
     before ->
       @iv = sinon.stub @cell, 'incrementValue'
       @md = sinon.stub @cell, 'handleMouseDown'
