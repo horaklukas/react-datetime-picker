@@ -8,7 +8,7 @@ module.exports = React.createClass
 
   render: ->
     hourDisabled = 'h' in @props.disabled
-    minDisabled = 'i' in @props.disabled
+    minDisabled = 'm' in @props.disabled
     secDisabled = 's' in @props.disabled
 
     <div className="timerow">

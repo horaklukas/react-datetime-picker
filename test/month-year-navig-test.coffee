@@ -35,3 +35,27 @@ describe 'Month-Year navigation component', ->
   it 'should call changed method with correct params for year subtract', ->
     TestUtils.Simulate.click @btns[3]
     @props.onMonthYearChange.should.been.calledOnce.and.calledWith 'y', 'add'
+
+  it 'should disable year buttons if disabled array contain `y`', ->
+    @navig.setProps disabled: ['y', 'M']
+
+    expect(@btns[0].props).to.have.property 'disabled', true
+    expect(@btns[3].props).to.have.property 'disabled', true
+
+  it 'should enable year buttons if disabled array not contain `y`', ->
+    @navig.setProps disabled: ['M']
+
+    expect(@btns[0].props).to.have.property 'disabled', false
+    expect(@btns[3].props).to.have.property 'disabled', false
+
+  it 'should disable month buttons if disabled array contain `M`', ->
+    @navig.setProps disabled: ['y', 'M']
+
+    expect(@btns[1].props).to.have.property 'disabled', true
+    expect(@btns[2].props).to.have.property 'disabled', true
+
+  it 'should enable month buttons if disabled array not contain `M`', ->
+    @navig.setProps disabled: ['y']
+
+    expect(@btns[1].props).to.have.property 'disabled', false
+    expect(@btns[2].props).to.have.property 'disabled', false

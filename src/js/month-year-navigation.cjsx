@@ -5,7 +5,7 @@ module.exports = React.createClass
 
   render: ->
     yearsDisabled = 'y' in @props.disabled
-    monthsDisabled = 'm' in @props.disabled
+    monthsDisabled = 'M' in @props.disabled
 
     <div className="nav-buttons">
       <div className="left">

@@ -1,25 +1,43 @@
 # React DateTime picker
 
-### Why another date time picker? ###
+## Why another date time picker? ##
 
 **Fiction**: There is not enough datetime pickers to save the world, so I decide to create another one :)
 
 **Fact**: Existing datetime pickers (React.js style) doesn't suit to me. Most often, their **time** part.
 
-### Example of component create ###
+## Examples of use ##
 
-```
+```javascript
+  var handleConfirm = function(date) {
+    // use the date
+  };
+
   React.renderComponent(
-    <DateTimePicker visible={true} onDateConfirm{handleConfirm} />,
+    <DateTimePicker visible={true} onDateConfirm={handleConfirm} />,
     document.getElementById('picker')
   );
 ```
 
-### Available props ###
+## Available props ##
 
-`visible` **Boolean** - controls picker visibility
+### visible ###
 
-`onClose` **Function** - callback for picker close
+Type: `Boolean`
+Default value: `false`
 
-`onDateConfirm` **Function(Date date)** - callback picker confirm, that
-receives set date as a first argument
+Controls picker visibility
+
+### onClose ###
+
+Type: `Function()`
+Default value: `undefined`
+
+Callback for picker close
+
+### onDateConfirm ###
+
+Type: `Function(Date)`
+Default value: `undefined`
+
+Callback for picker confirm. Receives date as a first argument

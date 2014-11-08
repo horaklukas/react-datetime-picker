@@ -8,7 +8,9 @@ classSet = require 'react/lib/cx'
 module.exports = React.createClass
   propTypes:
     visible: React.PropTypes.bool
-    disabled: React.PropTypes.array
+    disabled: React.PropTypes.arrayOf(
+      React.PropTypes.oneOf ['y', 'M', 'd', 'h', 'm', 's']
+    )
 
   ###*
   * Invoked when day at calendar is selected

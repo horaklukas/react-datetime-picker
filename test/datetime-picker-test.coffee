@@ -20,6 +20,18 @@ describe 'DateTime picker component', ->
     @pick.setProps visible: false
     @root.props.className.should.not.contain 'visible'
 
+  it 'should set calendar disabled if prop disabled contain `d`', ->
+    @pick.setProps disabled: ['d', 'h']
+
+    cal = TestUtils.findRenderedDOMComponentWithClass @root, 'calendarMock'
+    expect(cal.props).to.have.property 'disabled', true
+
+  it 'should set calendar enabled if prop disabled not contain `d`', ->
+    @pick.setProps disabled: ['M']
+
+    cal = TestUtils.findRenderedDOMComponentWithClass @root, 'calendarMock'
+    expect(cal.props).to.have.property 'disabled', false
+
   describe 'Closer', ->
     it 'should show Closer when onClose callback is defined', ->
       @pick.setProps onClose: sinon.spy()
