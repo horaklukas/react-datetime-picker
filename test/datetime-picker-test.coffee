@@ -1,5 +1,6 @@
 mockery.registerMock './calendar', mockComponent 'calendarMock'
 mockery.registerMock './time-picker', mockComponent 'timepickerMock'
+mockery.registerMock './month-year-navigation', mockComponent 'navigMock'
 
 moment = require 'moment'
 Picker = require '../src/js/datetime-picker'
@@ -8,6 +9,11 @@ describe 'DateTime picker component', ->
   before ->
     @pick = TestUtils.renderIntoDocument Picker(value: 2)
     @root = TestUtils.findRenderedDOMComponentWithClass @pick, 'datetime-picker'
+
+  after ->
+    mockery.deregisterMock './calendar'
+    mockery.deregisterMock './time-picker'
+    mockery.deregisterMock './month-year-navigation'
 
   beforeEach ->
     @pick.setProps()
@@ -108,3 +114,21 @@ describe 'DateTime picker component', ->
       @pick.state.actualDate.hours().should.equal 11
       @pick.state.actualDate.minutes().should.equal 38
       @pick.state.actualDate.seconds().should.equal 2
+
+  describe 'method handleTimeChange', ->
+    beforeEach ->
+      @pick.setState actualDate: moment(new Date(2002, 10, 3, 11, 38, 2))
+
+    it 'should set new only value of passed type', ->
+      @pick.handleTimeChange 'h', 16
+      expect(@pick.state.actualDate.hours(), 'hours').to.equal 16
+
+      @pick.handleTimeChange 'm', 29
+      expect(@pick.state.actualDate.minutes(), 'minutes').to.equal 29
+
+      @pick.handleTimeChange 's', 2
+      expect(@pick.state.actualDate.seconds(), 'seconds').to.equal 2
+
+      @pick.state.actualDate.year().should.equal 2002
+      @pick.state.actualDate.month().should.equal 10
+      @pick.state.actualDate.date().should.equal 3

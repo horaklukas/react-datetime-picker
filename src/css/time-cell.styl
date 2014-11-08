@@ -1,7 +1,25 @@
-.datetime-picker .timerow .time
+arrowMargin = 2px
+arrowSize = 5px
+
+arrow(border-edge)
+  size: 0
+  margin: arrowMargin
+  border-left: arrowSize solid transparent
+  border-right: arrowSize solid transparent
+  border-{border-edge}: arrowSize + 1 solid #555
+
+.datetime-picker .timerow .time-cell
+  display: inline-block
+  // first multiply makes height of spinner and second
+  // is because there are two spinners
+  // compute 1 is line between spinners
+  height: (arrowSize * 2) * 2 + 1
+  line-height: @height
   .value
+    display: inline-block
     padding: 0px 3px 0px 4px
     border: 1px solid #889
+    border-right: 0
     background-color: #FFF
     font-weight: bold
     &.highlightable:hover
@@ -9,3 +27,30 @@
       colors(#667,#FFF)
     &.active
       colors(#000,#FFF)
+
+  .spinners
+      display: inline-block
+      border: 1px solid black
+      border-radius: 2px
+      vertical-align: bottom
+
+    .spinner
+        display: block
+        background-color: #ededed
+        vertical-align: middle
+        &:hover
+          background-color: #ddd
+          .arrow
+            border-bottom-color: #000
+            border-top-color: #000
+        &:active
+          background-color: #fff
+
+        &.up
+          border-bottom: 1px solid black
+
+    .up .arrow
+      arrow: bottom
+
+    .down .arrow
+      arrow: top

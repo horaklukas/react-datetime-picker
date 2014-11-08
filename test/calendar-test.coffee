@@ -11,6 +11,9 @@ describe 'Calendar component', ->
     @cal = TestUtils.renderIntoDocument Calendar(@props)
     #@root = TestUtils.findRenderedDOMComponentWithClass @cal, 'nav-buttons'
 
+  after ->
+    mockery.deregisterMock './calendar-day'
+
   describe 'calendar generating', ->
     before ->
       sinon.stub @cal, 'createWeek'

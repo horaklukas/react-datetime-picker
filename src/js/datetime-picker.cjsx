@@ -13,7 +13,7 @@ module.exports = React.createClass
     )
 
   ###*
-  * Invoked when day at calendar is selected
+  * Called when day at calendar is selected
   *
   * @param {Date|string} unit New date or unit (y, M) to add/substract
   * @param {string=} operation Subtract or add
@@ -32,19 +32,13 @@ module.exports = React.createClass
     @setState actualDate: nextDate
 
   ###*
+  * Called by time cell spinners
   *
-  * @param {string} type
+  * @param {string} unit Type of time unit to change, one of 'h', 'm', 's'
   * @param {number} value
   ###
-  handleTimeChange: (type, value) ->
-    nextDate = @state.actualDate
-
-    switch type
-      when 'hour' then nextDate.hours value
-      when 'minute' then nextDate.minutes value
-      when 'second' then nextDate.seconds value
-
-    @setState nextDate
+  handleTimeChange: (unit, value) ->
+    @setState actualDate: @state.actualDate.clone().set unit, value
 
   handleConfirm: ->
     if @props.onDateConfirm?

@@ -13,17 +13,8 @@ describe 'TimePicker component', ->
     @tpick = TestUtils.renderIntoDocument TPicker(@props)
     @root = TestUtils.findRenderedDOMComponentWithClass @tpick, 'timerow'
 
-  describe 'render', ->
-    before ->
-      sinon.stub @tpick, 'createTimeCell'
-
-    beforeEach ->
-      @tpick.createTimeCell.reset()
-
-    after ->
-      @tpick.createTimeCell.restore()
-
-    it ''
+  after ->
+    mockery.deregisterMock './time-cell'
 
   describe 'method createTimeCell', ->
     beforeEach ->
