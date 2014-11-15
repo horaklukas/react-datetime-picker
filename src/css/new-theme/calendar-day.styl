@@ -1,0 +1,19 @@
+.datetime-picker .calendar
+  .day
+    display: table-cell
+    width: 2em
+    padding: 4px
+    border-right:1px solid dayBorderColor
+    border-bottom:1px solid dayBorderColor
+    colors: lighten(dayBgColor, 10%), alpha(dayColor, 0.2)
+    cursor: default
+    //.weekend
+    //  color: #A66
+    &:nth-child(1)
+      border-left: 1px solid dayBorderColor
+    &.currentMonth
+      colors: dayBgColor dayColor
+      &:hover
+        colors hoveredDayBgColor, hoveredDayColor
+      &.selected
+        colors selectedDayBgColor, selectedDayColor

@@ -1,0 +1,44 @@
+@import 'nib/size'
+@import 'nib/vendor'
+
+colors(bg = #FFF, clr = #000)
+  background-color: bg
+  color: clr
+
+.datetime-picker
+  display: none
+  colors()
+  border: 2px solid pickerBorderColor
+  border-radius: 2px
+  font-family: Tahoma, Verdana, sans-serif
+  font-size: 11px
+  z-index: 98
+  &.visible
+    display: inline-block
+  .disabled
+    color: #999 !important
+  button
+    height: 20px
+    margin: 0
+    font-size: bold 13px
+    line-height: @font-size
+    vertical-align: middle
+    colors: buttonBgColor buttonColor
+    border: 1px outset buttonBorderColor
+    border-radius: 3px
+    &:hover
+      colors: hoveredButtonBgColor hoveredButtonColor
+    &:active
+      if dark(buttonBgColor)
+        colors: lighten(buttonBgColor, 30%), darken(buttonColor, 70%)
+      else
+        colors: darken(buttonBgColor, 30%), lighten(buttonColor, 70%)
+    &.confirm
+      width: 98%
+      margin: 1px 1%
+      padding:2px
+
+@import 'picker-head'
+@import 'month-year-navigation'
+@import 'calendar'
+@import 'time-picker'
