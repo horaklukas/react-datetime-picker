@@ -2,17 +2,16 @@ TimeCell = require '../src/js/time-cell'
 
 describe 'TimeCell component', ->
   before ->
-    @cell = TestUtils.renderIntoDocument TimeCell(value: 2)
-    @elem = TestUtils.findRenderedDOMComponentWithTag @cell, 'span'
+    @props =
+      value: 2
+      type: 'h'
+      maxVal: 59
+      onChange: sinon.spy()
+    @cell = TestUtils.renderIntoDocument TimeCell @props
+    @elem = TestUtils.findRenderedDOMComponentWithClass @cell, 'time-cell'
+    @spinners = TestUtils.scryRenderedDOMComponentsWithClass @elem, 'spinner'
 
   describe 'classes', ->
-    it 'should has `value` class always', ->
-      @cell.setState disabled: true
-      @elem.props.className.should.contain 'value'
-
-      @cell.setState disabled: false
-      @elem.props.className.should.contain 'value'
-
     it 'should has class disabled if cell is disabled', ->
       @cell.setProps disabled: true
       @elem.props.className.should.contain 'disabled'
@@ -21,39 +20,30 @@ describe 'TimeCell component', ->
       @cell.setProps disabled: false
       @elem.props.className.should.not.contain 'disabled'
 
-  describe 'events', ->
+  describe 'method incrementValue', ->
     before ->
-      @iv = sinon.stub @cell, 'incrementValue'
-      @md = sinon.stub @cell, 'handleMouseDown'
+      @cell.setProps type: 'h', maxVal: 38
 
     beforeEach ->
-      @iv.reset()
-      @md.reset()
+      @props.onChange.reset()
+      @cell.setState value: 10
 
-    after ->
-      @iv.restore()
-      @md.restore()
+    it 'should change actual value with passed positive increment', ->
+      @cell.incrementValue 1
+      @props.onChange.should.been.calledWithExactly 'h', 11
 
-    it 'should call incrementValue on Click if cell isnt disabled', ->
-      @cell.setProps disabled: false
-      TestUtils.Simulate.click @elem
+    it 'should change actual value with passed negative increment', ->
+      @cell.incrementValue -1
+      @props.onChange.should.been.calledWithExactly 'h', 9
 
-      @iv.should.been.calledOnce
+    it 'should set value to 0 if it is more than max value', ->
+      @cell.setState value: 38
+      @cell.incrementValue 1
 
-    it 'should not call incrementValue on Click if cell is disabled', ->
-      @cell.setProps disabled: true
-      TestUtils.Simulate.click @elem
+      @props.onChange.should.been.calledWithExactly 'h', 0
 
-      @iv.should.not.been.called
+    it 'should set value to max value if it is less then 0', ->
+      @cell.setState value: 0
+      @cell.incrementValue -1
 
-    it 'should call handleMouseDown on MouseDown if cell isnt disabled', ->
-      @cell.setProps disabled: false
-      TestUtils.Simulate.mouseDown @elem
-
-      @md.should.been.calledOnce
-
-    it 'should not call handleMouseDown on MouseDown if cell is disabled', ->
-      @cell.setProps disabled: true
-      TestUtils.Simulate.mouseDown @elem
-
-      @md.should.not.been.called
+      @props.onChange.should.been.calledWithExactly 'h', 38
