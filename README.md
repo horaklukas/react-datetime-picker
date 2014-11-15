@@ -24,13 +24,31 @@
 ### visible ###
 
 Type: `Boolean`
+
 Default value: `false`
 
 Controls picker visibility
 
+### disabled ###
+
+Type: `Array(String)`
+
+Default value: `[]`
+
+Sets certain parts of picker disabled.
+Recognized values:
+
+* `y` - disable year change
+* `M` - disable month change
+* `d` - disable setting day
+* `h` - disable hours change
+* `m` - disable minutes change
+* `s` - disable seconds change
+
 ### onClose ###
 
 Type: `Function()`
+
 Default value: `undefined`
 
 Callback for picker close
@@ -38,6 +56,7 @@ Callback for picker close
 ### onDateConfirm ###
 
 Type: `Function(Date)`
+
 Default value: `undefined`
 
 Callback for picker confirm. Receives date as a first argument
