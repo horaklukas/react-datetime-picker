@@ -21,13 +21,22 @@
 
 ## Available props ##
 
+### date ###
+
+Type: `Date`
+
+Default value: `new Date()`
+
+Instance of `Date` object to get selected date (and time) for picker. If not
+supplied then actual date (and time) is used.
+
 ### visible ###
 
 Type: `Boolean`
 
 Default value: `false`
 
-Controls picker visibility
+Controls picker visibility.
 
 ### disabled ###
 
@@ -51,7 +60,7 @@ Type: `Function()`
 
 Default value: `undefined`
 
-Callback for picker close
+Callback for picker close.
 
 ### onDateConfirm ###
 
@@ -59,4 +68,5 @@ Type: `Function(Date)`
 
 Default value: `undefined`
 
-Callback for picker confirm. Receives date as a first argument
+Callback for picker confirm. Receives instance of Date object as a first
+argument.

@@ -11,6 +11,7 @@ module.exports = React.createClass
     disabled: React.PropTypes.arrayOf(
       React.PropTypes.oneOf ['y', 'M', 'd', 'h', 'm', 's']
     )
+    date: React.PropTypes.instanceOf Date
 
   ###*
   * Called when day at calendar is selected
@@ -43,6 +44,18 @@ module.exports = React.createClass
   handleConfirm: ->
     if @props.onDateConfirm?
       @props.onDateConfirm @state.actualDate.toDate()
+
+  ###*
+  * @param {Date} date
+  ###
+  setActualDate: (date) ->
+    if date? then @setState actualDate: moment(date)
+
+  componentWillReceiveProps: (nextProps) ->
+    @setActualDate nextProps.date
+
+  componentDidMount: ->
+    @setActualDate @props.date
 
   getInitialState: ->
     actualDate: moment(new Date)
