@@ -12,7 +12,8 @@ module.exports = React.createClass
     @props.onChange @props.type, value
 
   componentWillReceiveProps: (nextProps) ->
-    if nextProps.value? then @setState value: nextProps.value
+    if nextProps.value? and nextProps.value isnt @props.value
+      @setState value: nextProps.value
 
   getInitialState: ->
     value: @props.value

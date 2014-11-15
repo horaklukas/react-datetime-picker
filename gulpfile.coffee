@@ -3,14 +3,17 @@ gutil = require 'gulp-util'
 cjsx = require 'gulp-cjsx'
 browserify = require 'gulp-browserify'
 mocha = require 'gulp-mocha'
+istanbul = require 'gulp-istanbul'
 stylus = require 'gulp-stylus'
 rename = require 'gulp-rename'
 nib = require 'nib'
 connect = require 'gulp-connect'
+_ = require 'lodash'
 
-handleError = (e) ->
+handleError = (e, cb) ->
   gutil.log gutil.colors.red('Error'), e
   @end()
+  cb?()
 
 paths =
   cjsx: './src/js/**/*.cjsx'
@@ -56,12 +59,20 @@ gulp.task 'connect', ->
     livereload: true
   }
 
-gulp.task 'test', ->
+gulp.task 'test', (cb) ->
   # init test variables and environment
   require './test/test-assets'
 
-  gulp.src([paths.test], { read: false })
-    .pipe(mocha(mochaOptions).on('error', handleError))
+  gulp.src(paths.js)
+    .pipe istanbul(includeUntested: true) # Covering files
+    .on 'finish', ->
+      gulp.src([paths.test], {read: false})
+        .pipe mocha(mochaOptions).on('error', _.partialRight(handleError, cb))
+        .pipe istanbul.writeReports() # Creating the reports after tests runned
+        .on 'end', cb
+  # this return is neccessary to prevent error from gulp orchestrator
+  # see https://github.com/SBoudrias/gulp-istanbul/issues/22
+  return
 
 gulp.task 'watch', ['connect'], ->
   gulp.watch paths.cjsx, ['cjsx']
