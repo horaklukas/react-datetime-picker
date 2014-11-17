@@ -49,11 +49,13 @@ describe 'Spinner component', ->
 
   describe 'permanent incrementing', ->
     before ->
+      sinon.spy @spinner, 'clearStartTimer'
       @spinner.setProps changeValue: @props.changeValue
 
     beforeEach ->
       @clock = sinon.useFakeTimers()
       @props.changeValue.reset()
+      @spinner.clearStartTimer.reset()
 
     afterEach ->
       @clock.restore()
@@ -94,3 +96,21 @@ describe 'Spinner component', ->
 
       @clock.tick 110
       @props.changeValue.callCount.should.equal 4
+
+    it 'should clear start timer when released button before incrementing', ->
+      TestUtils.Simulate.mouseDown @elem
+      @clock.tick 900
+
+      @spinner.handleMouseUp()
+
+      @spinner.clearStartTimer.should.been.calledOnce
+      expect(@spinner._startTimer).to.be.null
+
+    it 'should clear increment timer when released button after increment start', ->
+      TestUtils.Simulate.mouseDown @elem
+      expect(@spinner._incrementTimer).to.be.truthy
+      @clock.tick 1300
+
+      @spinner.handleMouseUp()
+
+      expect(@spinner._startTimer).to.be.null
