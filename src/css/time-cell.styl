@@ -22,9 +22,6 @@ arrow(border-edge)
     border-right: 0
     background-color: #FFF
     font-weight: bold
-    &.highlightable:hover
-      border-color: #000
-      colors(#667,#FFF)
     &.active
       colors(#000,#FFF)
 
@@ -45,12 +42,20 @@ arrow(border-edge)
             border-top-color: #000
         &:active
           background-color: #fff
-
         &.up
           border-bottom: 1px solid black
 
     .up .arrow
       arrow: bottom
-
     .down .arrow
       arrow: top
+
+  &.disabled
+    .spinner
+      opacity: 0.5
+      &:hover
+      &:active
+        background-color: #ededed
+        .arrow
+          border-bottom-color: #555
+          border-top-color: #555
