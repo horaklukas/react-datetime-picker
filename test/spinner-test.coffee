@@ -56,34 +56,32 @@ describe 'Spinner component', ->
       @clock = sinon.useFakeTimers()
       @props.changeValue.reset()
       @spinner.clearStartTimer.reset()
+      sinon.stub @spinner, 'startIncrementing'
 
     afterEach ->
       @clock.restore()
+      @spinner.startIncrementing.restore?()
 
     it 'should not start incrementing if spinner released before start timeout elapse', ->
-      sinon.stub @spinner, 'startIncrementing'
-
       TestUtils.Simulate.mouseDown @elem
-      @clock.tick 600
+      @clock.tick 300
       #TestUtils.Simulate.mouseUp document
       @spinner.handleMouseUp()
-      @clock.tick 500
+      @clock.tick 150
 
       @spinner.startIncrementing.should.not.been.called
-      @spinner.startIncrementing.restore()
 
     it 'should start incrementing if spinner not released before start timeout elapse', ->
-      sinon.stub @spinner, 'startIncrementing'
-
       TestUtils.Simulate.mouseDown @elem
-      @clock.tick 1100
+      @clock.tick 600
 
       @spinner.startIncrementing.should.been.calledOnce
-      @spinner.startIncrementing.restore()
 
     it 'shoud call prop changeValue each time increment speed elapse', ->
+      @spinner.startIncrementing.restore()
+
       TestUtils.Simulate.mouseDown @elem
-      @clock.tick 1000
+      @clock.tick 500
       # incrementing start here
       @clock.tick 110
       @props.changeValue.should.been.calledOnce
@@ -99,17 +97,18 @@ describe 'Spinner component', ->
 
     it 'should clear start timer when released button before incrementing', ->
       TestUtils.Simulate.mouseDown @elem
-      @clock.tick 900
+      @clock.tick 400
 
       @spinner.handleMouseUp()
 
+      @spinner.startIncrementing.should.not.been.called
       @spinner.clearStartTimer.should.been.calledOnce
       expect(@spinner._startTimer).to.be.null
 
     it 'should clear increment timer when released button after increment start', ->
       TestUtils.Simulate.mouseDown @elem
       expect(@spinner._incrementTimer).to.be.truthy
-      @clock.tick 1300
+      @clock.tick 700
 
       @spinner.handleMouseUp()
 
