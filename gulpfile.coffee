@@ -9,6 +9,7 @@ rename = require 'gulp-rename'
 nib = require 'nib'
 connect = require 'gulp-connect'
 _ = require 'lodash'
+yargs = require 'yargs'
 
 handleError = (e, cb) ->
   gutil.log gutil.colors.red('Error'), e
@@ -41,7 +42,7 @@ gulp.task 'browserify', ->
     .pipe(browserify({
       insertGlobals : false
       #insertGlobalVars: ['React']
-      debug: 'production'
+      debug: !yargs.production
       standalone: 'DateTimePicker'
     }))
     .pipe(gulp.dest(paths.dist))
@@ -76,6 +77,6 @@ gulp.task 'test', (cb) ->
 
 gulp.task 'watch', ['connect'], ->
   gulp.watch paths.cjsx, ['cjsx']
-  gulp.watch paths.js, ['browserify']
+  # gulp.watch paths.js, ['browserify']
   gulp.watch paths.styl, ['stylus']
   gulp.watch [paths.test].concat(paths.js), ['test']
