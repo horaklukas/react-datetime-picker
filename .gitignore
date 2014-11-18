@@ -3,6 +3,8 @@
 *.log
 
 !gulpfile.js
+!index.js
+!stylus.js
 !dist/*.js
 !dist/*.css
 
