@@ -1,3 +1,4 @@
+React = require 'react'
 domEvents = require 'dom-events'
 
 ###*

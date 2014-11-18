@@ -1,4 +1,4 @@
-#React = require 'react'
+React = require 'react'
 _ = require 'lodash'
 TimeCell = require './time-cell'
 

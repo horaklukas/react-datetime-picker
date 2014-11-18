@@ -1,4 +1,4 @@
-#React = require 'react'
+React = require 'react'
 Spinner = require './spinner'
 classSet = require 'react/lib/cx'
 

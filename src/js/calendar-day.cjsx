@@ -1,4 +1,4 @@
-#React = require 'react'
+React = require 'react'
 classSet = require 'react/lib/cx'
 
 module.exports = React.createClass

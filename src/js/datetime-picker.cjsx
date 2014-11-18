@@ -1,4 +1,4 @@
-#React = require 'react'
+React = require 'react'
 FullCalendar = require './calendar'
 TimePicker = require './time-picker'
 Navigation = require './month-year-navigation'

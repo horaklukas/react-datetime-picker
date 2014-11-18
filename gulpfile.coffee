@@ -1,7 +1,8 @@
 gulp = require 'gulp'
 gutil = require 'gulp-util'
 cjsx = require 'gulp-cjsx'
-browserify = require 'gulp-browserify'
+browserify = require 'browserify'
+transform = require 'vinyl-transform'
 mocha = require 'gulp-mocha'
 istanbul = require 'gulp-istanbul'
 stylus = require 'gulp-stylus'
@@ -9,7 +10,7 @@ rename = require 'gulp-rename'
 nib = require 'nib'
 connect = require 'gulp-connect'
 _ = require 'lodash'
-yargs = require 'yargs'
+yargs = require('yargs').argv
 
 handleError = (e, cb) ->
   gutil.log gutil.colors.red('Error'), e
@@ -38,13 +39,19 @@ gulp.task 'cjsx', ->
     .pipe(gulp.dest('./src/js'))
 
 gulp.task 'browserify', ->
-  gulp.src(paths.mainJs)
-    .pipe(browserify({
+  # gulp-browserify is blacklisted, use natural browserify
+  # https://medium.com/@sogko/gulp-browserify-the-gulp-y-way-bb359b3f9623
+  browserified = transform (filename) ->
+    b = browserify {
+      entries: [filename]
       insertGlobals : false
-      #insertGlobalVars: ['React']
       debug: !yargs.production
       standalone: 'DateTimePicker'
-    }))
+    }
+    b.bundle().on 'error', handleError
+
+  gulp.src([paths.mainJs])
+    .pipe(browserified)
     .pipe(gulp.dest(paths.dist))
     .pipe(connect.reload())
 
