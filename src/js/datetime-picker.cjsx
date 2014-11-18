@@ -79,7 +79,7 @@ module.exports = React.createClass
     if @props.onClose?
       Closer = <span className="closer" onClick={@props.onClose}>x</span>
 
-    <div className={pickerClasses}>
+    <div className={pickerClasses} style={@props.style}>
       <div className="head">
         <span className="title">{month} - {year}</span>
         {Closer}
