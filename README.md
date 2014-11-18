@@ -8,11 +8,23 @@
 
 ## Installation ##
 
+Install last release
+
 ```
   npm install horaklukas/react-datetime-picker
 ```
 
-install last release
+Then require it
+
+```javascript
+  var DateTimePicker = require('react-datetime-picker');
+```
+
+or use distribution bundle at `dist` dir
+
+```html
+  <script src="react-datetime-picker/dist/datime-picker.js"></script>
+```
 
 ## Examples of use ##
 

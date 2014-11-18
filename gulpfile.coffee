@@ -3,6 +3,7 @@ gutil = require 'gulp-util'
 cjsx = require 'gulp-cjsx'
 browserify = require 'browserify'
 transform = require 'vinyl-transform'
+uglify = require 'gulp-uglify'
 mocha = require 'gulp-mocha'
 istanbul = require 'gulp-istanbul'
 stylus = require 'gulp-stylus'
@@ -48,10 +49,13 @@ gulp.task 'browserify', ->
       debug: !yargs.production
       standalone: 'DateTimePicker'
     }
+    b.transform 'browserify-shim'
     b.bundle().on 'error', handleError
+
 
   gulp.src([paths.mainJs])
     .pipe(browserified)
+    .pipe(uglify())
     .pipe(gulp.dest(paths.dist))
     .pipe(connect.reload())
 
