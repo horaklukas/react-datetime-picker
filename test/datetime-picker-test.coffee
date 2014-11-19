@@ -152,3 +152,21 @@ describe 'DateTime picker component', ->
       @pick.state.actualDate.year().should.equal 2002
       @pick.state.actualDate.month().should.equal 10
       @pick.state.actualDate.date().should.equal 3
+
+  describe 'method handleConfirm', ->
+    before ->
+      @confirmCb = sinon.spy()
+
+    beforeEach ->
+      @confirmCb.reset()
+      @pick.setProps onDateConfirm: null
+
+    it 'should call confirm callback with actual date if callback defined', ->
+      date = new Date 2013, 10, 5, 15, 12, 23
+      @pick.setProps onDateConfirm: @confirmCb
+      @pick.setState actualDate: moment(date)
+
+      @pick.handleConfirm()
+
+      @confirmCb.should.been.calledOnce
+      expect(@confirmCb.lastCall.args[0].valueOf()).to.equal date.getTime()

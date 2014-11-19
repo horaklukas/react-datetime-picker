@@ -1,4 +1,4 @@
-#React = require 'react'
+React = require 'react'
 classSet = require 'react/lib/cx'
 
 module.exports = React.createClass
@@ -14,7 +14,7 @@ module.exports = React.createClass
       'day': true
       'currentMonth': currentMonth
       'weekend': weekDay is 6 or weekDay is 7
-      'selected': @props.selected
+      'selected': !@props.disabled and @props.selected
       #'today': moment() is day
       'disabled': @props.disabled
     }

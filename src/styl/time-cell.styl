@@ -8,6 +8,11 @@ arrow(border-edge)
   border-right: arrowSize solid transparent
   border-{border-edge}: arrowSize + 1 solid #555
 
+spinnerAction(color)
+  .arrow
+    border-bottom-color: color
+    border-top-color: color
+
 .datetime-picker .timerow .time-cell
   display: inline-block
   // first multiply makes height of spinner and second
@@ -22,9 +27,6 @@ arrow(border-edge)
     border-right: 0
     background-color: #FFF
     font-weight: bold
-    &.highlightable:hover
-      border-color: #000
-      colors(#667,#FFF)
     &.active
       colors(#000,#FFF)
 
@@ -33,24 +35,30 @@ arrow(border-edge)
       border: 1px solid black
       border-radius: 2px
       vertical-align: bottom
-
+      background-color: #ededed
     .spinner
         display: block
-        background-color: #ededed
+        background-color: transparent
         vertical-align: middle
         &:hover
-          background-color: #ddd
-          .arrow
-            border-bottom-color: #000
-            border-top-color: #000
+          spinnerAction(#333)
         &:active
-          background-color: #fff
+          spinnerAction(#000)
 
         &.up
           border-bottom: 1px solid black
 
     .up .arrow
       arrow: bottom
-
     .down .arrow
       arrow: top
+
+  &.disabled
+    .spinner
+      opacity: 0.5
+      &:hover
+      &:active
+        background-color: #ededed
+        .arrow
+          border-bottom-color: #555
+          border-top-color: #555

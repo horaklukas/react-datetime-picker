@@ -1,9 +1,10 @@
+React = require 'react'
 domEvents = require 'dom-events'
 
 ###*
 * @const Delay before between hold spinner down and start changing value
 ###
-DELAY_BEFORE_START = 1000
+DELAY_BEFORE_START = 500
 ###*
 * @const Frequence of changin value when holds down the spinner
 ###

@@ -1,16 +1,22 @@
 gulp = require 'gulp'
 gutil = require 'gulp-util'
 cjsx = require 'gulp-cjsx'
-browserify = require 'gulp-browserify'
+browserify = require 'browserify'
+transform = require 'vinyl-transform'
+uglify = require 'gulp-uglify'
 mocha = require 'gulp-mocha'
+istanbul = require 'gulp-istanbul'
 stylus = require 'gulp-stylus'
 rename = require 'gulp-rename'
 nib = require 'nib'
 connect = require 'gulp-connect'
+_ = require 'lodash'
+yargs = require('yargs').argv
 
-handleError = (e) ->
+handleError = (e, cb) ->
   gutil.log gutil.colors.red('Error'), e
   @end()
+  cb?()
 
 paths =
   cjsx: './src/js/**/*.cjsx'
@@ -34,13 +40,22 @@ gulp.task 'cjsx', ->
     .pipe(gulp.dest('./src/js'))
 
 gulp.task 'browserify', ->
-  gulp.src(paths.mainJs)
-    .pipe(browserify({
+  # gulp-browserify is blacklisted, use natural browserify
+  # https://medium.com/@sogko/gulp-browserify-the-gulp-y-way-bb359b3f9623
+  browserified = transform (filename) ->
+    b = browserify {
+      entries: [filename]
       insertGlobals : false
-      #insertGlobalVars: ['React']
-      debug: 'production'
+      debug: !yargs.production
       standalone: 'DateTimePicker'
-    }))
+    }
+    b.transform 'browserify-shim'
+    b.bundle().on 'error', handleError
+
+
+  gulp.src([paths.mainJs])
+    .pipe(browserified)
+    .pipe(uglify())
     .pipe(gulp.dest(paths.dist))
     .pipe(connect.reload())
 
@@ -56,15 +71,23 @@ gulp.task 'connect', ->
     livereload: true
   }
 
-gulp.task 'test', ->
+gulp.task 'test', (cb) ->
   # init test variables and environment
   require './test/test-assets'
 
-  gulp.src([paths.test], { read: false })
-    .pipe(mocha(mochaOptions).on('error', handleError))
+  gulp.src(paths.js)
+    .pipe istanbul(includeUntested: true) # Covering files
+    .on 'finish', ->
+      gulp.src([paths.test], {read: false})
+        .pipe mocha(mochaOptions).on('error', _.partialRight(handleError, cb))
+        .pipe istanbul.writeReports() # Creating the reports after tests runned
+        .on 'end', cb
+  # this return is neccessary to prevent error from gulp orchestrator
+  # see https://github.com/SBoudrias/gulp-istanbul/issues/22
+  return
 
 gulp.task 'watch', ['connect'], ->
   gulp.watch paths.cjsx, ['cjsx']
-  gulp.watch paths.js, ['browserify']
+  # gulp.watch paths.js, ['browserify']
   gulp.watch paths.styl, ['stylus']
   gulp.watch [paths.test].concat(paths.js), ['test']
