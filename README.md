@@ -108,14 +108,13 @@ Default value: `false`
 
 Controls picker visibility.
 
-### top/left ###
+### style ###
 
-Type: `Number`
+Type: `Object`
 
 Default value: undefined
 
-If set one of top/left property then picker position type is set to absolute
-with corrsponding top/left values (if set only one of them, the second is 0).
+Any inline styles that are supplied to component are applied on root element.
 
 ### disabled ###
 

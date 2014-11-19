@@ -13,6 +13,7 @@ module.exports = React.createClass
       React.PropTypes.oneOf ['y', 'M', 'd', 'h', 'm', 's']
     )
     date: React.PropTypes.instanceOf Date
+    style: React.PropTypes.object
 
   ###*
   * Called when day at calendar is selected
