@@ -166,7 +166,7 @@ describe 'DateTime picker component', ->
       @pick.setProps onDateConfirm: @confirmCb
       @pick.setState actualDate: moment(date)
 
-      @pick.handleConfirm()
+      @pick.handleConfirm preventDefault: sinon.spy()
 
       @confirmCb.should.been.calledOnce
       expect(@confirmCb.lastCall.args[0].valueOf()).to.equal date.getTime()

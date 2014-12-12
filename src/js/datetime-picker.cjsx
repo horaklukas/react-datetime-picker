@@ -43,7 +43,8 @@ module.exports = React.createClass
   handleTimeChange: (unit, value) ->
     @setState actualDate: @state.actualDate.clone().set unit, value
 
-  handleConfirm: ->
+  handleConfirm: (e)->
+    e.preventDefault()
     @props.onDateConfirm? @state.actualDate.toDate()
 
   ###*

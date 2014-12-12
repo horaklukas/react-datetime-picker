@@ -22,7 +22,8 @@ module.exports = React.createClass
     </div>
 
 NavigButton = React.createClass
-  handleClick: ->
+  handleClick: (e) ->
+    e.preventDefault()
     @props.onClick @props.unit, @props.operation
 
   render: ->
