@@ -1,5 +1,5 @@
 React = require 'react'
-domEvents = require 'dom-events'
+domEvents = if window? then require 'dom-events' else {once: ->}
 
 ###*
 * @const Delay before between hold spinner down and start changing value

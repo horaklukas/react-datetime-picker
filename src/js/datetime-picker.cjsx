@@ -4,7 +4,6 @@ TimePicker = require './time-picker'
 Navigation = require './month-year-navigation'
 moment = require 'moment'
 _ = require 'lodash'
-classSet = require 'react/lib/cx'
 
 module.exports = React.createClass
   propTypes:
@@ -73,10 +72,9 @@ module.exports = React.createClass
     hours = actualDate.hours()
     mins = actualDate.minutes()
     secs = actualDate.seconds()
-    pickerClasses = classSet {
-      'datetime-picker': true
-      'visible': !!@props.visible
-    }
+
+    pickerClasses = 'datetime-picker'
+    pickerClasses += ' visible' if !!@props.visible
 
     if @props.onClose?
       Closer = <span className="closer" onClick={@props.onClose}>x</span>

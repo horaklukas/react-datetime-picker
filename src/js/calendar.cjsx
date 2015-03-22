@@ -1,5 +1,4 @@
 React = require 'react'
-classSet = require 'react/lib/cx'
 util = require 'util'
 CalendarDay = require './calendar-day'
 moment = require 'moment'
@@ -30,10 +29,8 @@ module.exports = React.createClass
     # weekdays are in list from Sunday to Saturday, we want it from Monday to
     # Sunday and this "overflow" workaround makes it possible
     name = weekDays[order + 1] ? weekDays[0]
-    classes = classSet {
-      'name': true
-      'weekend': order is 5 or order is 6
-    }
+    classes = 'name'
+    classes += 'weekend' if order is 5 or order is 6
 
     <span className={classes} key={order}>{name}</span>
 

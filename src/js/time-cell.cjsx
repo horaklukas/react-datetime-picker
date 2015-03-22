@@ -1,6 +1,5 @@
 React = require 'react'
 Spinner = require './spinner'
-classSet = require 'react/lib/cx'
 
 module.exports = React.createClass
   incrementValue: (increment) ->
@@ -19,11 +18,9 @@ module.exports = React.createClass
     value: @props.value
 
   render: ->
-    classes = classSet {
-      'time-cell': true
-      'disabled': @props.disabled
-      'highlightable': not @props.disabled
-    }
+    classes = 'time-cell'
+    classes += ' disabled' if @props.disabled
+    classes += ' highlightable' if not @props.disabled
 
     value = @state.value.toString()
     if value.length is 1 then value = "0#{value}"
