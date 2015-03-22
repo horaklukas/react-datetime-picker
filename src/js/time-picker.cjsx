@@ -1,11 +1,11 @@
 React = require 'react'
-_ = require 'lodash'
+_contains = require 'lodash.contains'
 TimeCell = require './time-cell'
 
 module.exports = React.createClass
   createTimeCell: (value, type, maxVal) ->
     <TimeCell value={value} type={type} onChange={@props.onTimeChange}
-      maxVal={maxVal} disabled={_.contains @props.disabled, type}  />
+      maxVal={maxVal} disabled={_contains @props.disabled, type}  />
 
   render: ->
     <div className="timerow">

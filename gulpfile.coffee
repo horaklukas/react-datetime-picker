@@ -10,7 +10,7 @@ stylus = require 'gulp-stylus'
 rename = require 'gulp-rename'
 nib = require 'nib'
 connect = require 'gulp-connect'
-_ = require 'lodash'
+_partialRight = require 'lodash.partialright'
 yargs = require('yargs').argv
 
 handleError = (e, cb) ->
@@ -83,7 +83,7 @@ gulp.task 'test', (cb) ->
     .pipe istanbul(includeUntested: true) # Covering files
     .on 'finish', ->
       gulp.src([paths.test], {read: false})
-        .pipe mocha(mochaOptions).on('error', _.partialRight(handleError, cb))
+        .pipe mocha(mochaOptions).on('error', _partialRight(handleError, cb))
         .pipe istanbul.writeReports() # Creating the reports after tests runned
         .on 'end', cb
   # this return is neccessary to prevent error from gulp orchestrator

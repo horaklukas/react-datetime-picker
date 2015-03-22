@@ -1,5 +1,5 @@
 React = require 'react'
-_ = require 'lodash'
+_contains = require 'lodash.contains'
 
 module.exports = React.createClass
   createNavigButton: (label, unit, operation, disabled) ->
@@ -7,8 +7,8 @@ module.exports = React.createClass
       unit={unit} operation={operation} label={label} />
 
   render: ->
-    yearsDisabled = _.contains @props.disabled, 'y'
-    monthsDisabled = _.contains @props.disabled, 'M'
+    yearsDisabled = _contains @props.disabled, 'y'
+    monthsDisabled = _contains @props.disabled, 'M'
 
     <div className="nav-buttons">
       <div className="left">

@@ -3,7 +3,7 @@ FullCalendar = require './calendar'
 TimePicker = require './time-picker'
 Navigation = require './month-year-navigation'
 moment = require 'moment'
-_ = require 'lodash'
+_contains = require 'lodash.contains'
 
 module.exports = React.createClass
   propTypes:
@@ -87,7 +87,7 @@ module.exports = React.createClass
       <Navigation disabled={@props.disabled}
         onMonthYearChange={@handleDateChange} />
       <FullCalendar date={actualDate}
-        disabled={_.contains @props.disabled, 'd'}
+        disabled={_contains @props.disabled, 'd'}
         onDaySelect={@handleDateChange} />
       <TimePicker hours={hours} mins={mins} secs={secs}
         disabled={@props.disabled}

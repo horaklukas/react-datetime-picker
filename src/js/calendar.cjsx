@@ -1,5 +1,4 @@
 React = require 'react'
-util = require 'util'
 CalendarDay = require './calendar-day'
 moment = require 'moment'
 
