@@ -29,7 +29,7 @@ module.exports = React.createClass
     # Sunday and this "overflow" workaround makes it possible
     name = weekDays[order + 1] ? weekDays[0]
     classes = 'name'
-    classes += 'weekend' if order is 5 or order is 6
+    classes += ' weekend' if order is 5 or order is 6
 
     <span className={classes} key={order}>{name}</span>
 

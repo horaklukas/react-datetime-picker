@@ -50,17 +50,19 @@ describe 'Spinner component', ->
   describe 'permanent incrementing', ->
     before ->
       sinon.spy @spinner, 'clearStartTimer'
+      sinon.spy @spinner, 'handleChangeValue'
+      sinon.spy @spinner, 'startIncrementing'
       @spinner.setProps changeValue: @props.changeValue
 
     beforeEach ->
       @clock = sinon.useFakeTimers()
       @props.changeValue.reset()
       @spinner.clearStartTimer.reset()
-      sinon.stub @spinner, 'startIncrementing'
+      @spinner.handleChangeValue.reset()
+      @spinner.startIncrementing.reset()
 
     afterEach ->
       @clock.restore()
-      @spinner.startIncrementing.restore?()
 
     it 'should not start incrementing if spinner released before start timeout elapse', ->
       TestUtils.Simulate.mouseDown @elem
@@ -78,8 +80,6 @@ describe 'Spinner component', ->
       @spinner.startIncrementing.should.been.calledOnce
 
     it 'shoud call prop changeValue each time increment speed elapse', ->
-      @spinner.startIncrementing.restore()
-
       TestUtils.Simulate.mouseDown @elem
       @clock.tick 500
       # incrementing start here
@@ -105,11 +105,28 @@ describe 'Spinner component', ->
       @spinner.clearStartTimer.should.been.calledOnce
       expect(@spinner._startTimer).to.be.null
 
-    it 'should clear increment timer when released button after increment start', ->
+    it 'should clear start timer before start incrementing', ->
       TestUtils.Simulate.mouseDown @elem
-      expect(@spinner._incrementTimer).to.be.truthy
-      @clock.tick 700
+      @clock.tick 510
 
       @spinner.handleMouseUp()
 
+      @spinner.clearStartTimer.should.been.calledOnce
       expect(@spinner._startTimer).to.be.null
+
+    it 'should clear increment timer when released button after increment start', ->
+      TestUtils.Simulate.mouseDown @elem
+      expect(@spinner._incrementTimer).to.be.null
+      @clock.tick 710
+
+      expect(@spinner._incrementTimer).to.not.be.null
+      @spinner.handleChangeValue.should.been.calledTwice
+
+      @spinner.handleMouseUp()
+
+      expect(@spinner._incrementTimer).to.be.null
+
+      @spinner.handleChangeValue.reset()
+      @clock.tick 330
+
+      @spinner.handleChangeValue.should.not.been.called
