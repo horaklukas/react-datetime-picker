@@ -1,4 +1,6 @@
 React = require 'react'
+# this is hack for express-react-views because it renders the react components
+# internally at non-browser environemnt and there is no variable `window`
 domEvents = if window? then require 'dom-events' else {once: ->}
 
 ###*

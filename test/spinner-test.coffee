@@ -12,7 +12,7 @@ describe 'Spinner component', ->
 
   describe 'handle events', ->
     before ->
-      @hc = sinon.stub @spinner, 'handleChangeValue'
+      @hc = sinon.spy @spinner, 'handleChangeValue'
       @hmd = sinon.stub @spinner, 'handleMouseDown'
 
     beforeEach ->
@@ -23,17 +23,35 @@ describe 'Spinner component', ->
       @hc.restore()
       @hmd.restore()
 
-    it 'should call incrementValue on Click if changeValue is truthy', ->
+    it 'should call handleChangeValue on Click if changeValue is truthy', ->
       @spinner.setProps changeValue: sinon.spy()
       TestUtils.Simulate.click @elem
 
       @hc.should.been.calledOnce
 
-    it 'should not call incrementValue on Click if changeValue is falsy', ->
+    it 'should call handleChangeValue with passed spinner increment', ->
+      cb = sinon.spy()
+
+      @spinner.setProps increment: 1, changeValue: cb
+      TestUtils.Simulate.click @elem
+
+      cb.should.been.calledOnce.and.calledWith 1
+
+      @spinner.setProps increment: -1, changeValue: cb
+      TestUtils.Simulate.click @elem
+
+      cb.should.been.calledTwice.and.calledWith -1
+
+    it 'should not call changeValue on Click if changeValue is falsy', ->
       @spinner.setProps changeValue: null
       TestUtils.Simulate.click @elem
 
       @hc.should.not.been.called
+
+    it 'should not throw when changeValue callback is not defined', ->
+      @spinner.setProps changeValue: null
+
+      expect(@spinner.handleChangeValue()).to.not.throw
 
     it 'should call handleMouseDown on MouseDown if changeValue is truthy', ->
       @spinner.setProps changeValue: sinon.spy()
