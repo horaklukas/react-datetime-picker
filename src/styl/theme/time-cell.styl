@@ -28,29 +28,4 @@ arrow(border-edge)
     &.active
       colors(#000,#FFF)
 
-  .spinners
-      display: inline-block
-      border: 1px solid black
-      border-radius: 2px
-      vertical-align: bottom
-
-    .spinner
-        display: block
-        background-color: #ededed
-        vertical-align: middle
-        &:hover
-          background-color: #ddd
-          .arrow
-            border-bottom-color: #000
-            border-top-color: #000
-        &:active
-          background-color: #fff
-
-        &.up
-          border-bottom: 1px solid black
-
-    .up .arrow
-      arrow: bottom
-
-    .down .arrow
-      arrow: top
+@import 'spinners'

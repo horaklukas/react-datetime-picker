@@ -27,7 +27,7 @@ paths =
     dist: './src/js/datetime-picker.js'
   styl:
     src:'./src/styl/**/*.styl'
-    main: './src/styl/datetime-picker.styl'
+    main: './src/styl/*.styl'
   test: './test/**/*-test.coffee'
   dist: './dist'
 

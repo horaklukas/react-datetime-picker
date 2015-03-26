@@ -6,9 +6,10 @@
     border-right:1px solid dayBorderColor
     border-bottom:1px solid dayBorderColor
     colors: lighten(dayBgColor, 10%), alpha(dayColor, 0.2)
+    line-height: 12px
+    font-weight: normal
+    text-align: right
     cursor: default
-    //.weekend
-    //  color: #A66
     &:nth-child(1)
       border-left: 1px solid dayBorderColor
     &.currentMonth
@@ -17,3 +18,5 @@
         colors hoveredDayBgColor, hoveredDayColor
       &.selected
         colors selectedDayBgColor, selectedDayColor
+        font-weight: bold
+        //padding: 1px 3px 1px 1px

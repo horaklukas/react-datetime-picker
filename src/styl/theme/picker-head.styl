@@ -8,14 +8,11 @@
     font-weight: bold
     text-align: center
     .title
-      padding: 0// 2px
+      padding: 0 // 2px
     .closer
       size: @height
       float: right
       cursor: pointer
       colors: closerBgColor closerColor
       &:hover
-        if dark(closerBgColor)
-          colors: lighten(closerBgColor, 30%), darken(closerColor, 70%)
-        else
-          colors: darken(closerBgColor, 30%), lighten(closerColor, 70%)
+        colors: closerColor closerBgColor
