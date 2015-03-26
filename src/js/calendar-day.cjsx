@@ -1,5 +1,4 @@
-#React = require 'react'
-classSet = require 'react/lib/cx'
+React = require 'react'
 
 module.exports = React.createClass
 
@@ -10,14 +9,12 @@ module.exports = React.createClass
     {day, currentMonth} = @props
     weekDay = day.isoWeekday()
 
-    classes = classSet {
-      'day': true
-      'currentMonth': currentMonth
-      'weekend': weekDay is 6 or weekDay is 7
-      'selected': @props.selected
-      #'today': moment() is day
-      'disabled': @props.disabled
-    }
+    classes = 'day'
+    classes += ' currentMonth' if currentMonth
+    classes += ' weekend' if weekDay is 6 or weekDay is 7
+    classes += ' selected' if !@props.disabled and @props.selected
+    # classes += 'today' if moment() is day
+    classes += ' disabled' if @props.disabled
 
     clickHandler = @handleDayClick if currentMonth and not @props.disabled
 

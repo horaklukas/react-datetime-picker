@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Example of DateTime picker use</title>
+  <link rel="stylesheet" type="text/css" href="../dist/datetime-picker.css">
+  <script src="../node_modules/react/dist/react.js"></script>
+  <script src="../node_modules/react/dist/JSXTransformer.js"></script>
+  <script type="text/javascript" src="../dist/datetime-picker.js"></script>
+  <script src="http://localhost:35729/livereload.js"></script>
+  <style type="text/css">
+    .opener {
+      width: 20px;
+      height: 20px;
+      margin: 50px;
+      border: 1px solid black;
+      border-radius: 3px;
+      font-weight: bold;
+      line-height: 20px;
+      text-align: center;
+      cursor: pointer;
+    }
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: #555;
+      opacity: 0.3;
+    }
+  </style>
+</head>
+<body>
+  <div id="demo"></div>
+
+  <script type="text/jsx">
+    /** @jsx React.DOM */
+    App = React.createClass({
+      handleConfirm: function(date) {
+        // do something with date
+        // ...
+        console.log(date);
+
+        this.hidePicker();
+      },
+
+      hidePicker: function() {
+        this.setState({pickerVisible: false});
+      },
+
+      showPicker: function() {
+        this.setState({pickerVisible: true});
+      },
+
+      componentDidMount: function() {
+        var opener = this.refs.opener.getDOMNode();
+
+        this.setState({
+          pickerTop: opener.offsetTop, // + opener.offsetHeight
+          pickerLeft: opener.offsetLeft // + opener.offsetWidth
+        });
+      },
+
+      getInitialState: function() {
+        return {
+          pickerVisible: false,
+          pickerTop: null,
+          pickerLeft: null
+        };
+      },
+
+      render: function() {
+        var pickerVisible, pickerStyle;
+
+        pickerVisible = this.state.pickerVisible;
+
+        if(pickerVisible) {
+          pickerStyle = {
+            position: 'absolute',
+            top: this.state.pickerTop || 0,
+            left: this.state.pickerLeft || 0
+          };
+        }
+
+        return(
+          <div>
+            Click opener (rectangle with C) to open Picker
+            <div className="opener" ref="opener"
+              onClick={this.showPicker}>C</div>
+
+            <div className="overlay" onClick={this.hidePicker}
+              style={{display: pickerVisible ? 'block' : 'none'}} />
+
+            <DateTimePicker visible={pickerVisible} style={pickerStyle}
+              onClose={this.hidePicker} onDateConfirm={this.handleConfirm} />
+          </div>
+        )
+      }
+    });
+
+    React.renderComponent(<App />, document.getElementById('demo'));
+  </script>
+</body>
+</html>

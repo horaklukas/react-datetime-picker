@@ -3,7 +3,10 @@
 *.log
 
 !gulpfile.js
+!index.js
+!stylus.js
 !dist/*.js
 !dist/*.css
 
 node_modules/
+coverage/

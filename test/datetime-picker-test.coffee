@@ -7,7 +7,7 @@ Picker = require '../src/js/datetime-picker'
 
 describe 'DateTime picker component', ->
   before ->
-    @pick = TestUtils.renderIntoDocument Picker(value: 2)
+    @pick = TestUtils.renderIntoDocument Picker()
     @root = TestUtils.findRenderedDOMComponentWithClass @pick, 'datetime-picker'
 
   after ->
@@ -17,6 +17,20 @@ describe 'DateTime picker component', ->
 
   beforeEach ->
     @pick.setProps()
+
+  it 'should save date if passed as a prop (immedietly after mount)', ->
+    date = new Date 2013, 9, 23, 6, 3, 5
+    pick = TestUtils.renderIntoDocument Picker(date: date)
+
+    expect(pick.state.actualDate.valueOf()).to.equal date.getTime()
+
+  it 'should use actual date if date not passed as a prop (after mount)', ->
+    fakeActualDate = new Date 2014, 11, 14, 10, 38, 14
+    clock = sinon.useFakeTimers fakeActualDate.getTime()
+    pick = TestUtils.renderIntoDocument Picker()
+
+    expect(pick.state.actualDate.valueOf()).to.equal fakeActualDate.getTime()
+    clock.restore()
 
   it 'should display calendar if `visible` prop is true', ->
     @pick.setProps visible: true
@@ -37,6 +51,12 @@ describe 'DateTime picker component', ->
 
     cal = TestUtils.findRenderedDOMComponentWithClass @root, 'calendarMock'
     expect(cal.props).to.have.property 'disabled', false
+
+  it 'should set actual date if passed as a prop', ->
+    date = new Date 2014, 9, 26, 11, 34, 1
+    @pick.setProps date: date
+
+    expect(@pick.state.actualDate.valueOf()).to.equal date.getTime()
 
   describe 'Closer', ->
     it 'should show Closer when onClose callback is defined', ->
@@ -132,3 +152,21 @@ describe 'DateTime picker component', ->
       @pick.state.actualDate.year().should.equal 2002
       @pick.state.actualDate.month().should.equal 10
       @pick.state.actualDate.date().should.equal 3
+
+  describe 'method handleConfirm', ->
+    before ->
+      @confirmCb = sinon.spy()
+
+    beforeEach ->
+      @confirmCb.reset()
+      @pick.setProps onDateConfirm: null
+
+    it 'should call confirm callback with actual date if callback defined', ->
+      date = new Date 2013, 10, 5, 15, 12, 23
+      @pick.setProps onDateConfirm: @confirmCb
+      @pick.setState actualDate: moment(date)
+
+      @pick.handleConfirm preventDefault: sinon.spy()
+
+      @confirmCb.should.been.calledOnce
+      expect(@confirmCb.lastCall.args[0].valueOf()).to.equal date.getTime()

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Example of DateTime picker use</title>
+  <link rel="stylesheet" type="text/css" href="../dist/datetime-picker.css">
+  <script src="../node_modules/react/dist/react.js"></script>
+  <script src="../node_modules/react/dist/JSXTransformer.js"></script>
+  <script type="text/javascript" src="../dist/datetime-picker.js"></script>
+  <script src="http://localhost:35729/livereload.js"></script>
+  <style type="text/css">
+    input[type=checkbox] {
+      margin-right: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div id="demo"></div>
+
+  <script type="text/jsx">
+    /** @jsx React.DOM */
+    var Demo, units, unitLabelMapping;
+
+    units = ['y', 'M', 'd', 'h', 'm', 's'];
+    unitLabelMapping = {
+      'y': 'Years',
+      'M': 'Months',
+      'd': 'Days',
+      'h': 'Hours',
+      'm': 'Minutes',
+      's': 'Seconds'
+    };
+
+    Demo = React.createClass({
+      handleClose: function() {
+        this.setState({'info': 'Clicked close of calendar'});
+      },
+
+      handleConfirm: function(date) {
+        this.setState({'info': date.toString()});
+      },
+
+      handleVisibleChange: function(e) {
+        this.setState({'visible': e.target.checked});
+      },
+
+      handleUnitDisable: function(e) {
+        var unit, disableds;
+
+        disableds = this.state.disabled;
+        unit = e.target.value;
+
+        if(e.target.checked) {
+          disableds.push(unit);
+        }else{
+          disableds.splice(disableds.indexOf(unit), 1);
+        }
+
+        this.setState({'disabled': disableds});
+      },
+
+      getInitialState: function() {
+        return {
+          info: 'None',
+          visible: true,
+          disabled: []
+        };
+      },
+
+      createUnitDisabler: function(unit, i) {
+        return (
+          <span key={i}>
+            {unitLabelMapping[unit]}
+            <input type="checkbox" value={unit} onChange={this.handleUnitDisable} />
+          </span>
+        );
+      },
+
+      render: function() {
+        return (
+          <div className="demo">
+            <div>Last action: <strong>{this.state.info}</strong></div>
+            <div>
+              <p>
+                Visible:
+                <input type="checkbox" checked={this.state.visible}
+                  onChange={this.handleVisibleChange} />
+              </p>
+              <p>
+                Disable: {units.map(this.createUnitDisabler)}
+              </p>
+            </div>
+            <DateTimePicker visible={this.state.visible}
+              disabled={this.state.disabled}
+              onClose={this.handleClose}
+              onDateConfirm={this.handleConfirm} />
+          </div>
+        )
+      }
+    });
+
+    React.renderComponent(<Demo />, document.getElementById('demo'));
+
+  </script>
+</body>
+</html>

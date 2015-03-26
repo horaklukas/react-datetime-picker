@@ -1,11 +1,14 @@
+React = require 'react'
+_contains = require 'lodash.contains'
+
 module.exports = React.createClass
-  createNavigButton: (label, unit, operation, disabled = false) ->
+  createNavigButton: (label, unit, operation, disabled) ->
     <NavigButton disabled={disabled} onClick={@props.onMonthYearChange}
       unit={unit} operation={operation} label={label} />
 
   render: ->
-    yearsDisabled = 'y' in @props.disabled
-    monthsDisabled = 'M' in @props.disabled
+    yearsDisabled = _contains @props.disabled, 'y'
+    monthsDisabled = _contains @props.disabled, 'M'
 
     <div className="nav-buttons">
       <div className="left">
@@ -19,7 +22,8 @@ module.exports = React.createClass
     </div>
 
 NavigButton = React.createClass
-  handleClick: ->
+  handleClick: (e) ->
+    e.preventDefault()
     @props.onClick @props.unit, @props.operation
 
   render: ->

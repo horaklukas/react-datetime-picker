@@ -1,0 +1,64 @@
+arrowMargin = 2px
+arrowSize = 5px
+
+arrow(border-edge)
+  size: 0
+  margin: arrowMargin
+  border-left: arrowSize solid transparent
+  border-right: arrowSize solid transparent
+  border-{border-edge}: arrowSize + 1 solid #555
+
+spinnerAction(color)
+  .arrow
+    border-bottom-color: color
+    border-top-color: color
+
+.datetime-picker .timerow .time-cell
+  display: inline-block
+  // first multiply makes height of spinner and second
+  // is because there are two spinners
+  // compute 1 is line between spinners
+  height: (arrowSize * 2) * 2 + 1
+  line-height: @height
+  .value
+    display: inline-block
+    padding: 0px 3px 0px 4px
+    border: 1px solid #889
+    border-right: 0
+    background-color: #FFF
+    font-weight: bold
+    &.active
+      colors(#000,#FFF)
+
+  .spinners
+      display: inline-block
+      border: 1px solid black
+      border-radius: 2px
+      vertical-align: bottom
+      background-color: #ededed
+    .spinner
+        display: block
+        background-color: transparent
+        vertical-align: middle
+        &:hover
+          spinnerAction(#333)
+        &:active
+          spinnerAction(#000)
+
+        &.up
+          border-bottom: 1px solid black
+
+    .up .arrow
+      arrow: bottom
+    .down .arrow
+      arrow: top
+
+  &.disabled
+    .spinner
+      opacity: 0.5
+      &:hover
+      &:active
+        background-color: #ededed
+        .arrow
+          border-bottom-color: #555
+          border-top-color: #555

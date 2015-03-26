@@ -1,9 +1,9 @@
-#React = require 'react'
+React = require 'react'
 FullCalendar = require './calendar'
 TimePicker = require './time-picker'
 Navigation = require './month-year-navigation'
 moment = require 'moment'
-classSet = require 'react/lib/cx'
+_contains = require 'lodash.contains'
 
 module.exports = React.createClass
   propTypes:
@@ -11,6 +11,8 @@ module.exports = React.createClass
     disabled: React.PropTypes.arrayOf(
       React.PropTypes.oneOf ['y', 'M', 'd', 'h', 'm', 's']
     )
+    date: React.PropTypes.instanceOf Date
+    style: React.PropTypes.object
 
   ###*
   * Called when day at calendar is selected
@@ -40,9 +42,21 @@ module.exports = React.createClass
   handleTimeChange: (unit, value) ->
     @setState actualDate: @state.actualDate.clone().set unit, value
 
-  handleConfirm: ->
-    if @props.onDateConfirm?
-      @props.onDateConfirm @state.actualDate.toDate()
+  handleConfirm: (e)->
+    e.preventDefault()
+    @props.onDateConfirm? @state.actualDate.toDate()
+
+  ###*
+  * @param {Date} date
+  ###
+  setActualDate: (date) ->
+    if date? then @setState actualDate: moment(date)
+
+  componentWillReceiveProps: (nextProps) ->
+    @setActualDate nextProps.date
+
+  componentDidMount: ->
+    @setActualDate @props.date
 
   getInitialState: ->
     actualDate: moment(new Date)
@@ -58,15 +72,14 @@ module.exports = React.createClass
     hours = actualDate.hours()
     mins = actualDate.minutes()
     secs = actualDate.seconds()
-    pickerClasses = classSet {
-      'datetime-picker': true
-      'visible': !!@props.visible
-    }
+
+    pickerClasses = 'datetime-picker'
+    pickerClasses += ' visible' if !!@props.visible
 
     if @props.onClose?
       Closer = <span className="closer" onClick={@props.onClose}>x</span>
 
-    <div className={pickerClasses}>
+    <div className={pickerClasses} style={@props.style}>
       <div className="head">
         <span className="title">{month} - {year}</span>
         {Closer}
@@ -74,7 +87,7 @@ module.exports = React.createClass
       <Navigation disabled={@props.disabled}
         onMonthYearChange={@handleDateChange} />
       <FullCalendar date={actualDate}
-        disabled={'d' in @props.disabled}
+        disabled={_contains @props.disabled, 'd'}
         onDaySelect={@handleDateChange} />
       <TimePicker hours={hours} mins={mins} secs={secs}
         disabled={@props.disabled}

@@ -1,0 +1,20 @@
+.datetime-picker .calendar
+  .day
+    display: table-cell
+    width: 2em
+    padding: 2px 4px 2px 2px
+    line-height: 12px
+    color: rgba(68, 85, 102, 0.4)
+    font-weight: normal
+    text-align: right
+    &.selected
+      padding: 1px 3px 1px 1px
+      border: 1px solid #000
+      colors()
+      font-weight: bold
+    &.currentMonth
+      color: rgb(68, 85, 102)
+      &:hover
+        padding: 1px 3px 1px 1px
+        border: 1px solid #bbb
+        background: #DEF

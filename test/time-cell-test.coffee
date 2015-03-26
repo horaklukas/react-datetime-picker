@@ -11,6 +11,23 @@ describe 'TimeCell component', ->
     @elem = TestUtils.findRenderedDOMComponentWithClass @cell, 'time-cell'
     @spinners = TestUtils.scryRenderedDOMComponentsWithClass @elem, 'spinner'
 
+  describe 'receive props', ->
+    beforeEach ->
+      @cell.setState value: 0
+
+    it 'should set state `value` if prop `value` is defined', ->
+      @cell.setProps value: 15
+
+      expect(@cell.state.value).to.equal 15
+
+    it 'should left state `value` if prop `value` isnt defined', ->
+      @cell.setState value: 3
+      expect(@cell.state.value, 'before receive props').to.equal 3
+
+      @cell.setProps disabled: false
+
+      expect(@cell.state.value, 'after receive props').to.equal 3
+
   describe 'classes', ->
     it 'should has class disabled if cell is disabled', ->
       @cell.setProps disabled: true

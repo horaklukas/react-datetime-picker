@@ -9,7 +9,6 @@ describe 'Calendar component', ->
       date: moment new Date
 
     @cal = TestUtils.renderIntoDocument Calendar(@props)
-    #@root = TestUtils.findRenderedDOMComponentWithClass @cal, 'nav-buttons'
 
   after ->
     mockery.deregisterMock './calendar-day'
@@ -23,6 +22,7 @@ describe 'Calendar component', ->
 
     after ->
       @cal.createWeek.restore()
+
 
     it 'should create 6 rows for months that cover 4 weeks', ->
       @cal.setProps date: moment(new Date(2015, 1, 10))
@@ -46,6 +46,7 @@ describe 'Calendar component', ->
       @cal.setProps date: moment(new Date(2012, 3, 12))
       expect(@cal.createWeek.firstCall.args[0][0].day()).to.equal 1
 
+
     it 'should start first week with day from prev month if needed', ->
       @cal.setProps date: moment(new Date(2015, 3, 10))
 
@@ -59,6 +60,17 @@ describe 'Calendar component', ->
       lastDay = @cal.createWeek.lastCall.args[0][6]
       expect(lastDay.month()).to.equal 8
       expect(lastDay.date()).to.equal 6
+
+    it 'should create calendar day titles elements', ->
+      titles = TestUtils.scryRenderedDOMComponentsWithClass @cal, 'name'
+
+      expect(titles).to.have.length 7
+
+    it 'should add class weeked to last two title elements', ->
+      titles = TestUtils.scryRenderedDOMComponentsWithClass @cal, 'name'
+
+      expect(titles[5].props.className).to.contain ' weekend'
+      expect(titles[6].props.className).to.contain ' weekend'
 
   describe 'method createWeek', ->
     before ->

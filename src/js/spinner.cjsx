@@ -1,9 +1,12 @@
-domEvents = require 'dom-events'
+React = require 'react'
+# this is hack for express-react-views because it renders the react components
+# internally at non-browser environemnt and there is no variable `window`
+domEvents = if window? then require 'dom-events' else {once: ->}
 
 ###*
 * @const Delay before between hold spinner down and start changing value
 ###
-DELAY_BEFORE_START = 1000
+DELAY_BEFORE_START = 500
 ###*
 * @const Frequence of changin value when holds down the spinner
 ###
