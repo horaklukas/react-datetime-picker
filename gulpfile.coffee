@@ -10,7 +10,7 @@ stylus = require 'gulp-stylus'
 rename = require 'gulp-rename'
 nib = require 'nib'
 connect = require 'gulp-connect'
-_ = require 'lodash'
+_partialRight = require 'lodash.partialright'
 yargs = require('yargs').argv
 
 handleError = (e, cb) ->
@@ -19,11 +19,15 @@ handleError = (e, cb) ->
   cb?()
 
 paths =
-  cjsx: './src/js/**/*.cjsx'
-  js: './src/js/**/*.js'
-  mainJs: './src/js/datetime-picker.js'
-  styl: './src/css/**/*.styl'
-  mainStyl: './src/css/datetime-picker.styl'
+  cjsx:
+    src: './src/js/**/*.cjsx'
+    dist: './src/js'
+  js:
+    src: './src/js/**/*.js'
+    dist: './src/js/datetime-picker.js'
+  styl:
+    src:'./src/styl/**/*.styl'
+    main: './src/styl/*.styl'
   test: './test/**/*-test.coffee'
   dist: './dist'
 
@@ -35,9 +39,9 @@ mochaOptions =
 gulp.task 'default', ['cjsx', 'browserify', 'stylus']
 
 gulp.task 'cjsx', ->
-  gulp.src(paths.cjsx)
+  gulp.src(paths.cjsx.src)
     .pipe(cjsx({bare: true}).on('error', handleError))
-    .pipe(gulp.dest('./src/js'))
+    .pipe(gulp.dest(paths.cjsx.dist))
 
 gulp.task 'browserify', ->
   # gulp-browserify is blacklisted, use natural browserify
@@ -53,14 +57,14 @@ gulp.task 'browserify', ->
     b.bundle().on 'error', handleError
 
 
-  gulp.src([paths.mainJs])
+  gulp.src([paths.js.dist])
     .pipe(browserified)
     .pipe(uglify())
     .pipe(gulp.dest(paths.dist))
     .pipe(connect.reload())
 
 gulp.task 'stylus', ->
-  gulp.src(paths.mainStyl)
+  gulp.src(paths.styl.main)
     .pipe(stylus({compress: true, use: [nib()]}).on('error', handleError))
     .pipe(gulp.dest(paths.dist))
     .pipe(connect.reload())
@@ -75,11 +79,11 @@ gulp.task 'test', (cb) ->
   # init test variables and environment
   require './test/test-assets'
 
-  gulp.src(paths.js)
+  gulp.src(paths.js.src)
     .pipe istanbul(includeUntested: true) # Covering files
     .on 'finish', ->
       gulp.src([paths.test], {read: false})
-        .pipe mocha(mochaOptions).on('error', _.partialRight(handleError, cb))
+        .pipe mocha(mochaOptions).on('error', _partialRight(handleError, cb))
         .pipe istanbul.writeReports() # Creating the reports after tests runned
         .on 'end', cb
   # this return is neccessary to prevent error from gulp orchestrator
@@ -87,7 +91,7 @@ gulp.task 'test', (cb) ->
   return
 
 gulp.task 'watch', ['connect'], ->
-  gulp.watch paths.cjsx, ['cjsx']
-  # gulp.watch paths.js, ['browserify']
-  gulp.watch paths.styl, ['stylus']
-  gulp.watch [paths.test].concat(paths.js), ['test']
+  gulp.watch paths.cjsx.src, ['cjsx']
+  # gulp.watch paths.js.src, ['browserify']
+  gulp.watch paths.styl.src, ['stylus']
+  gulp.watch [paths.test].concat(paths.js.src), ['test']

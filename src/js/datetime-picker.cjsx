@@ -3,8 +3,7 @@ FullCalendar = require './calendar'
 TimePicker = require './time-picker'
 Navigation = require './month-year-navigation'
 moment = require 'moment'
-_ = require 'lodash'
-classSet = require 'react/lib/cx'
+_contains = require 'lodash.contains'
 
 module.exports = React.createClass
   propTypes:
@@ -43,7 +42,8 @@ module.exports = React.createClass
   handleTimeChange: (unit, value) ->
     @setState actualDate: @state.actualDate.clone().set unit, value
 
-  handleConfirm: ->
+  handleConfirm: (e)->
+    e.preventDefault()
     @props.onDateConfirm? @state.actualDate.toDate()
 
   ###*
@@ -72,10 +72,9 @@ module.exports = React.createClass
     hours = actualDate.hours()
     mins = actualDate.minutes()
     secs = actualDate.seconds()
-    pickerClasses = classSet {
-      'datetime-picker': true
-      'visible': !!@props.visible
-    }
+
+    pickerClasses = 'datetime-picker'
+    pickerClasses += ' visible' if !!@props.visible
 
     if @props.onClose?
       Closer = <span className="closer" onClick={@props.onClose}>x</span>
@@ -88,7 +87,7 @@ module.exports = React.createClass
       <Navigation disabled={@props.disabled}
         onMonthYearChange={@handleDateChange} />
       <FullCalendar date={actualDate}
-        disabled={_.contains @props.disabled, 'd'}
+        disabled={_contains @props.disabled, 'd'}
         onDaySelect={@handleDateChange} />
       <TimePicker hours={hours} mins={mins} secs={secs}
         disabled={@props.disabled}

@@ -1,0 +1,48 @@
+<html>
+<head>
+  <title>Example of DateTime picker themes</title>
+  <link id="themeLink" rel="stylesheet" type="text/css" href="">
+  <script type="text/javascript" src="../node_modules/react/dist/react.js"></script>
+  <script type="text/javascript" src="../dist/datetime-picker.js"></script>
+  <script src="http://localhost:35729/livereload.js"></script>
+</head>
+<body>
+  <div id="themeSelector">
+    <input type="radio" value="old" name="themeName" />Old theme<br />
+    <input type="radio" value="new" name="themeName" />New theme<br />
+  </div>
+  <div id="picker"></div>
+
+  <script type="text/javascript">
+    var setTheme, themeSelector, themeOptions, defaultTheme, event;
+
+    setTheme = function(themeName) {
+      var themeElement = document.getElementById('themeLink');
+      themeElement.href = '../dist/' + themeName + '-theme.css';
+    }
+
+    themeSelector = document.getElementById('themeSelector');
+    themeOptions = themeSelector.getElementsByTagName('input');
+    // Here set the default theme
+    defaultTheme = themeOptions[1];
+
+    for(var i = 0; i < themeOptions.length; i++) {
+      themeOptions[i].onchange = function(e) {
+        setTheme(e.target.value);
+        e.target.checked = true;
+      }
+    }
+
+    event = document.createEvent("HTMLEvents");
+    event.initEvent('change', true, true);
+    defaultTheme.dispatchEvent(event);
+
+    React.renderComponent(
+      React.createElement(DateTimePicker, {
+        onClose: function(){}, onDateConfirm: function(){}, visible: true
+      }),
+      document.getElementById('picker')
+    );
+  </script>
+</body>
+</html>

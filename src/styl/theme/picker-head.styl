@@ -1,0 +1,18 @@
+.datetime-picker
+  .head
+    height: 20px
+    line-height: @height
+    border-bottom: 1px solid #556
+    //colors()
+    font-size: @height - 5
+    font-weight: bold
+    text-align: center
+    .title
+      padding: 0 // 2px
+    .closer
+      size: @height
+      float: right
+      cursor: pointer
+      colors: closerBgColor closerColor
+      &:hover
+        colors: closerColor closerBgColor

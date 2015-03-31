@@ -12,7 +12,7 @@ describe 'Spinner component', ->
 
   describe 'handle events', ->
     before ->
-      @hc = sinon.stub @spinner, 'handleChangeValue'
+      @hc = sinon.spy @spinner, 'handleChangeValue'
       @hmd = sinon.stub @spinner, 'handleMouseDown'
 
     beforeEach ->
@@ -23,17 +23,35 @@ describe 'Spinner component', ->
       @hc.restore()
       @hmd.restore()
 
-    it 'should call incrementValue on Click if changeValue is truthy', ->
+    it 'should call handleChangeValue on Click if changeValue is truthy', ->
       @spinner.setProps changeValue: sinon.spy()
       TestUtils.Simulate.click @elem
 
       @hc.should.been.calledOnce
 
-    it 'should not call incrementValue on Click if changeValue is falsy', ->
+    it 'should call handleChangeValue with passed spinner increment', ->
+      cb = sinon.spy()
+
+      @spinner.setProps increment: 1, changeValue: cb
+      TestUtils.Simulate.click @elem
+
+      cb.should.been.calledOnce.and.calledWith 1
+
+      @spinner.setProps increment: -1, changeValue: cb
+      TestUtils.Simulate.click @elem
+
+      cb.should.been.calledTwice.and.calledWith -1
+
+    it 'should not call changeValue on Click if changeValue is falsy', ->
       @spinner.setProps changeValue: null
       TestUtils.Simulate.click @elem
 
       @hc.should.not.been.called
+
+    it 'should not throw when changeValue callback is not defined', ->
+      @spinner.setProps changeValue: null
+
+      expect(@spinner.handleChangeValue()).to.not.throw
 
     it 'should call handleMouseDown on MouseDown if changeValue is truthy', ->
       @spinner.setProps changeValue: sinon.spy()
@@ -50,17 +68,19 @@ describe 'Spinner component', ->
   describe 'permanent incrementing', ->
     before ->
       sinon.spy @spinner, 'clearStartTimer'
+      sinon.spy @spinner, 'handleChangeValue'
+      sinon.spy @spinner, 'startIncrementing'
       @spinner.setProps changeValue: @props.changeValue
 
     beforeEach ->
       @clock = sinon.useFakeTimers()
       @props.changeValue.reset()
       @spinner.clearStartTimer.reset()
-      sinon.stub @spinner, 'startIncrementing'
+      @spinner.handleChangeValue.reset()
+      @spinner.startIncrementing.reset()
 
     afterEach ->
       @clock.restore()
-      @spinner.startIncrementing.restore?()
 
     it 'should not start incrementing if spinner released before start timeout elapse', ->
       TestUtils.Simulate.mouseDown @elem
@@ -78,8 +98,6 @@ describe 'Spinner component', ->
       @spinner.startIncrementing.should.been.calledOnce
 
     it 'shoud call prop changeValue each time increment speed elapse', ->
-      @spinner.startIncrementing.restore()
-
       TestUtils.Simulate.mouseDown @elem
       @clock.tick 500
       # incrementing start here
@@ -105,11 +123,28 @@ describe 'Spinner component', ->
       @spinner.clearStartTimer.should.been.calledOnce
       expect(@spinner._startTimer).to.be.null
 
-    it 'should clear increment timer when released button after increment start', ->
+    it 'should clear start timer before start incrementing', ->
       TestUtils.Simulate.mouseDown @elem
-      expect(@spinner._incrementTimer).to.be.truthy
-      @clock.tick 700
+      @clock.tick 510
 
       @spinner.handleMouseUp()
 
+      @spinner.clearStartTimer.should.been.calledOnce
       expect(@spinner._startTimer).to.be.null
+
+    it 'should clear increment timer when released button after increment start', ->
+      TestUtils.Simulate.mouseDown @elem
+      expect(@spinner._incrementTimer).to.be.null
+      @clock.tick 710
+
+      expect(@spinner._incrementTimer).to.not.be.null
+      @spinner.handleChangeValue.should.been.calledTwice
+
+      @spinner.handleMouseUp()
+
+      expect(@spinner._incrementTimer).to.be.null
+
+      @spinner.handleChangeValue.reset()
+      @clock.tick 330
+
+      @spinner.handleChangeValue.should.not.been.called

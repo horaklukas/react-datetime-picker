@@ -1,0 +1,20 @@
+.datetime-picker .calendar
+  display: table
+  clear: both
+  text-align: center
+  .daynames
+    display: table-row
+    line-height: 12px
+    font-weight: normal
+    .name
+      display: table-cell
+      padding: 2px
+      // this makes top border of the first week in the calendar
+      border-bottom: 1px solid dayBorderColor
+      colors: dayNamesBgColor dayNamesColor
+      text-align: center
+      cursor: default
+  .week
+    display: table-row
+
+@import 'calendar-day'
