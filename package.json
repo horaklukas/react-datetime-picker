@@ -1,6 +1,6 @@
 {
   "name": "react-datetime-picker",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "React.js date-time picker component",
   "main": "index.js",
   "scripts": {
@@ -37,7 +37,6 @@
     "dom-events": "^0.1.1",
     "lodash.contains": "^2.4.1",
     "moment": "^2.8.3"
-
   },
   "browserify-shim": {
     "react": "global:React"
