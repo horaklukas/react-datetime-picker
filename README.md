@@ -26,6 +26,8 @@ or use distribution bundle at `dist` dir
   <script src="react-datetime-picker/dist/datime-picker.js"></script>
 ```
 
+_Note: Distribution bundle uses syntax of React 0.12.x_
+
 ## Examples of use ##
 
 Simple use
